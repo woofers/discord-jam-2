@@ -269,61 +269,6 @@ function screen:is_visible(x, y, width, height)
    return true
 end
 
-local ember = {}
-make_object(ember, sprite)
-
-function ember:init(x, y, screen)
-   sprite.init(self)
-   self:set_location(x, y)
-   self.screen = screen
-   self.radius = random(0, 2)
-   self.color = 9
-end
-
-function ember:update(dt)
-   sprite.update(dt)
-   local speed = 30
-   local multiplier = random(1, 5)
-   self.y += speed * multiplier * dt
-   if (not screen:is_visible(self.x, self.y, self.radius, self.radius)) then
-      local respawn_zone = random(0, 40)
-      self.y = respawn_zone
-   end
-end
-
-function ember:render(dt)
-   sprite.render(dt)
-   draw_rectangle(self.x, self.y, self.radius, self.radius, self.color)
-end
-
-local embers = {}
-make_object(embers, gameobject)
-
-function embers:init()
-   self.embers = {}
-   local embers_size = 140
-   local max_height = 0
-   local min_height = screen_size - 1
-   local min_width = 0
-   local max_width = screen_size - 1
-
-   for i = 1, embers_size do
-      self.embers[i] = ember(random(min_width, max_width), random(max_height, min_height), screen(0, 0))
-   end
-end
-
-function embers:update(dt)
-   for i = 1, #self.embers do
-      self.embers[i]:update(dt)
-   end
-end
-
-function embers:render(dt)
-   for i = 1, #self.embers do
-      self.embers[i]:render(dt)
-   end
-end
-
 local tile = {}
 make_object(tile, sprite)
 
@@ -871,11 +816,9 @@ make_object(menu, gameobject)
 
 function menu:init(states)
    self.game_states = states
-   self.exit_time = 0
 end
 
 function menu:create()
-   self.embers = embers()
    music(0)
 end
 
@@ -883,20 +826,15 @@ function menu:destroy()
 end
 
 function menu:update(dt)
-   self.embers:update(dt)
    if (btn(x_key) and not self.exit) then
-      self.exit = true
-      self.exit_time = 0
       music(-1, 0)
       sfx(22)
+      self.game_states:pop()
    end
-   if (self.exit) self.exit_time += dt;
 end
 
 function menu:render(dt)
    bg(8)
-   self:render_flash()
-   self.embers:render(dt)
 
    print("the devil with a new ram", 17, 105, 7)
    print("press ❎ to start", 32, 113, 7)
@@ -910,66 +848,6 @@ function menu:render(dt)
    -- draw horns
    sspr(40, 32, 8, 8, 55, 2, 40, 40)
    sspr(40, 32, 8, 8, 34, 2, 40, 40, true)
-end
-
-function menu:render_flash()
-   local delay = 0.08
-   local interval = 0.2
-
-   local frames = 12
-
-   local black = function()
-      for i = 0, 15 do
-         pal(i, 0)
-      end
-   end
-   local out = function()
-      reset_pallet()
-      pal(9, 6)
-      pal(7, 6)
-      pal(4, 6)
-      pal(5, 6)
-      pal(8, 5)
-      pal(0, 5)
-      pal(6, 6)
-   end
-   local dark = function()
-      reset_pallet()
-      pal(9, 5)
-      pal(7, 5)
-      pal(4, 5)
-      pal(5, 5)
-      pal(8, 0)
-      pal(0, 0)
-      pal(6, 5)
-   end
-   local on = function()
-      pal(9, 8)
-      pal(8, 7)
-      pal(7, 8)
-      pal(4, 8)
-      pal(5, 8)
-      pal(0, 7)
-      pal(6, 8)
-   end
-   local off = reset_pallet
-   local pattern = { on, off,
-                     on, off,
-                     on, off,
-                     out, dark,
-                     dark, black,
-                     black }
-
-   for i = 1, #pattern + 1 do
-      if self.exit_time > delay then
-         if i > #pattern then
-            self.game_states:pop()
-         elseif self.exit_time < (interval * i + delay) then
-            pattern[i]()
-            break
-         end
-      end
-   end
 end
 
 local play = {}
