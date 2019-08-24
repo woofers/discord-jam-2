@@ -327,10 +327,11 @@ function player:update(dt)
    local speed = 15
    local rotation = dt * speed * 360
    local time = 360 / rotation
+   local scale = dt * speed
    self.t += dt
    self.t = mod(self.t, time)
-   self.x += sin(self.t * dt * speed) * dt * speed * radius
-   self.y += cos(self.t * dt * speed) * dt * speed * radius
+   self.x += sin(self.t * scale) * scale * radius
+   self.y += cos(self.t * scale) * scale * radius
    self.r = rotation * self.t + 90
    self.r = mod(self.r, 360)
    if btnp(x_key) then
@@ -341,8 +342,11 @@ end
 function player:next_planet(t)
    if #self.planets > self.planet_idx then
       self.planet_idx += 1
+      local old_planet = self.planet
+      local offset_x = 28
+      local offset_y = 10
       self.planet = self.planets[self.planet_idx]
-      self:set_location(self.planet.x + 28, self.planet.y + 10)
+      self:set_location(self.planet.x + offset_x, self.planet.y + offset_y)
       self:reset(t)
    end
 end
@@ -353,6 +357,7 @@ end
 
 local planet = {}
 make_object(planet, sprite)
+
 
 function planet:init(x, y)
    self.x = x
