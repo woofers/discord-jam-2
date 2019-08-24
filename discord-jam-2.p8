@@ -290,19 +290,13 @@ function menu:update(dt)
 end
 
 function menu:render(dt)
-   bg(1)
+   bg(0)
 
    print("the pickle tickler", 17, 105, 7)
    print("press space to start", 32, 113, 7)
 
-   --drawing a moon
-   draw_circle(64, 128, 40, 5, 1, 6)
-
-   -- draw frame
-   --draw_rectangle(39, 42, 50, 50, 9, 2, 8)
-
-   -- draw ram
-   --sspr(0, 32, 16, 16, 41, 46, 80, 80)
+   -- draw planet
+   spr(12, 74, 50, 4, 5)
 
 end
 
