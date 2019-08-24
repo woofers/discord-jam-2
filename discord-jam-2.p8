@@ -284,7 +284,6 @@ end
 
 function menu:update(dt)
    if (btn(x_key) and not self.exit) then
-      sfx(22)
       self.game_states:pop()
    end
 end
