@@ -348,14 +348,16 @@ end
 -- Hacky workaround which simulates player
 -- movement loop to get correct location
 function player:set_pos(t)
-   if not t or t <= 0 then return end
    local accum = 0
+   local pos = { x=0, y=0 }
+   if not t or t <= 0 then return pos end
    for i=0, t, step do
      accum += step
      local scale = step * self.speed
-     self.x += self:move_x(accum, scale)
-     self.y += self:move_y(accum, scale)
+     pos.x += self:move_x(accum, scale)
+     pos.y += self:move_y(accum, scale)
    end
+   return pos
 end
 
 function player:move_x(t, scale)
@@ -371,12 +373,13 @@ function player:change_planet(t, planet)
    if 0 < self.planet_idx + planet
      and self.planet_idx + planet < #self.planets + 1 then
       self.planet_idx += planet
-      local old_planet = self.planet
       local offset_x = 28
       local offset_y = 10
       self.planet = self.planets[self.planet_idx]
-      self:set_location(self.planet.x + offset_x, self.planet.y + offset_y)
-      self:set_pos(t)
+      local new_pos = { x=self.planet.x + offset_x, y=self.planet.y + offset_y }
+      local offset_pos = self:set_pos(t)
+      self.x = new_pos.x + offset_pos.x
+      self.y = new_pos.y + offset_pos.y
       self:reset(t)
    end
 end
