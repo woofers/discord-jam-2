@@ -13,6 +13,8 @@ arrows = { right, left, up, down }
 z_key = 4
 x_key = 5
 
+max_planets = 5
+
 function make_object(object)
    object.__index = object
    setmetatable(object, {
@@ -309,7 +311,29 @@ function menu:render(dt)
 
 end
 
+local planet = {}
+make_object(planet, sprite)
+
+function planet:init(i)
+   local next_planet = 37
+   local planet_offset = 10
+   if not (mod(i, 2) == 0) then
+      self.y = 20
+   else
+      self.y = 80
+   end
+   self.x = planet_offset + next_planet * (i - 1)
+end
+
+function planet:update(dt)
+end
+
+function planet:render(dt)
+   draw_planet(self.x, self.y)
+end
+
 local player = {}
+
 make_object(player, sprite)
 
 function player:init(x, y, planets)
@@ -388,45 +412,27 @@ function player:move_y(t, scale)
   return cos(t * scale) * scale * self.radius
 end
 
-function player:change_planet(t, planet)
-   planet = planet or 1
+function player:change_planet(t, p)
+   p = p or 1
    t = t or 0
-   if 0 < self.planet_idx + planet
-     and self.planet_idx + planet < #self.planets + 1 then
-      self.planet_idx += planet
-      local offset_x = 28
-      local offset_y = 10
-      self.planet = self.planets[self.planet_idx]
-      local new_pos = { x=self.planet.x + offset_x, y=self.planet.y + offset_y }
-      local offset_pos = self:set_pos(t)
-      new_pos.x += offset_pos.x
-      new_pos.y += offset_pos.y
-      self.new_r = mod(self:rotate_r(t, step) - self.r, 360)
-      self.translate_x = new_pos.x - self.x
-      self.translate_y = new_pos.y - self.y
-      self.count = 0
-      self:reset(t)
-   end
+   self.planet_idx += p
+   self.planet_idx = mod(self.planet_idx, max_planets)
+   local offset_x = 28
+   local offset_y = 10
+   self.planet = self.planets[self.planet_idx]
+   local new_pos = { x=self.planet.x + offset_x, y=self.planet.y + offset_y }
+   local offset_pos = self:set_pos(t)
+   new_pos.x += offset_pos.x
+   new_pos.y += offset_pos.y
+   self.new_r = mod(self:rotate_r(t, step) - self.r, 360)
+   self.translate_x = new_pos.x - self.x
+   self.translate_y = new_pos.y - self.y
+   self.count = 0
+   self:reset(t)
 end
 
 function player:render(dt)
    draw_player(self.x, self.y, self.r)
-end
-
-local planet = {}
-make_object(planet, sprite)
-
-
-function planet:init(x, y)
-   self.x = x
-   self.y = y
-end
-
-function planet:update(dt)
-end
-
-function planet:render(dt)
-   draw_planet(self.x, self.y)
 end
 
 function draw_planet(x, y)
@@ -470,16 +476,8 @@ function play:init(states)
       self.stars[i] = star(random(1, 128), random(1, 128))
    end
    self.planets = {}
-   local next_planet = 37
-   local planet_offset = 10
-   local y
-   for i=1, 3 do
-      if not (mod(i, 2) == 0) then
-         y = 20
-      else
-         y = 80
-      end
-      self.planets[i] = planet(planet_offset + next_planet * (i - 1), y)
+   for i=1, max_planets do
+      self.planets[i] = planet(i)
    end
    self.player = player(50, 10, self.planets)
 end
