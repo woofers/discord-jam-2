@@ -482,7 +482,6 @@ function play:render(dt)
       self.planets[i]:render(dt)
    end
    self.player:render(dt)
-   self:render_debug(dt)
 end
 
 function play:render_debug(dt)
