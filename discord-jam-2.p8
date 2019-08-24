@@ -325,7 +325,7 @@ end
 function player:update(dt)
    local radius = 2.5
    local speed = 15
-   local rotation = 80
+   local rotation = 90
    self.t += dt
    self.x += sin(self.t * dt * speed) * dt * speed * radius
    self.y += cos(self.t * dt * speed) * dt * speed * radius
