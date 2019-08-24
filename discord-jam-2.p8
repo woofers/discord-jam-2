@@ -290,13 +290,15 @@ function menu:update(dt)
 end
 
 function menu:render(dt)
-   bg(0)
+   bg(1)
 
    print("the pickle tickler", 17, 105, 7)
    print("press space to start", 32, 113, 7)
 
    -- draw planet
-   spr(12, 74, 50, 4, 5)
+   draw_planet(64,30)
+   draw_redstar(50,50)
+   draw_bluestar(10, 15)
 
 end
 
@@ -319,6 +321,12 @@ end
 
 function draw_planet(x, y)
    spr(12, x, y, 4, 5)
+end
+function draw_redstar(x, y)
+	spr(11, x, y)
+end
+function draw_bluestar(x, y)
+	spr(27, x, y)
 end
 
 
