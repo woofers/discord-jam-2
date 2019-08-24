@@ -321,6 +321,7 @@ end
 
 function planet:render(dt)
    draw_rectangle(self.x, self.y, self.width, self.height, 6)
+   circle(self.x, self.y, self.width, self.height, max(self.width, self.height), 13)
 end
 
 
@@ -438,6 +439,10 @@ end
 
 function bg(color)
    draw_rectangle(0, 0, screen_size - 1, screen_size - 1, color)
+end
+
+function circle(x, y, width, height, r, color)
+  circ(x + width / 2, y + height / 2, r, color)
 end
 
 function draw_sprite(id, x, y, tile_x, tile_y, flip_x, flip_y)
