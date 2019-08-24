@@ -323,7 +323,7 @@ function player:reset()
 end
 
 function player:update(dt)
-   local radius = 2.5
+   local radius = 2
    local speed = 15
    local rotation = 90
    self.t += dt
@@ -339,7 +339,7 @@ function player:next_planet()
    if #self.planets > self.planet_idx then
       self.planet_idx += 1
       self.planet = self.planets[self.planet_idx]
-      self:set_location(self.planet.x + 30, self.planet.y + 12)
+      self:set_location(self.planet.x + 28, self.planet.y + 10)
       self:reset()
    end
 end
