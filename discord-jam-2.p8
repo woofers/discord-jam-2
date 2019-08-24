@@ -306,6 +306,30 @@ function menu:render(dt)
 
 end
 
+local player = {}
+make_object(player, sprite)
+
+function player:init(x, y)
+   self.x = x
+   self.y = y
+   self.t = 0
+   self.r = 90
+end
+
+function player:update(dt)
+   local radius = 2.5
+   local speed = 15
+   local rotation = 80
+   self.t += dt
+   self.x += sin(self.t * dt * speed) * dt * speed * radius
+   self.y += cos(self.t * dt * speed) * dt * speed * radius
+   self.r += rotation * dt
+end
+
+function player:render(dt)
+   draw_player(self.x, self.y, self.r)
+end
+
 local planet = {}
 make_object(planet, sprite)
 
@@ -327,6 +351,10 @@ function draw_planet(x, y)
    spr(12, x, y, 4, 5)
 end
 
+function draw_player(x, y, r)
+   r = r or 0
+   spr_r(32, x, y, r, 2, 2)
+end
 
 local star = {}
 make_object(star, sprite)
@@ -360,6 +388,7 @@ function play:init(states)
       self.stars[i] = star(random(1, 128), random(1, 128))
    end
    self.planets = {}
+   self.player = player(35, 50)
    local next_planet = 45
    local planet_offset = 5
    local y
@@ -387,6 +416,7 @@ function play:update(dt)
    for i=1, #self.planets do
       self.planets[i]:update(dt)
    end
+   self.player:update(dt)
 end
 
 function play:render(dt)
@@ -397,6 +427,7 @@ function play:render(dt)
    for i=1, #self.planets do
       self.planets[i]:render(dt)
    end
+   self.player:render(dt)
    self:render_debug(dt)
 end
 
@@ -496,6 +527,34 @@ end
 
 function mod(a, b)
    return a - flr(a / b) * b
+end
+
+-- Sprite rotation
+-- From https://www.lexaloffle.com/bbs/?pid=52525
+function spr_r(s,x,y,a,w,h)
+   sw=(w or 1)*8
+   sh=(h or 1)*8
+   sx=(s%8)*8
+   sy=flr(s/8)*8
+   x0=flr(0.5*sw)
+   y0=flr(0.5*sh)
+   a=a/360
+   sa=sin(a)
+   ca=cos(a)
+   for ix=0,sw-1 do
+      for iy=0,sh-1 do
+         dx=ix-x0
+         dy=iy-y0
+         xx=flr(dx*ca-dy*sa+x0)
+         yy=flr(dx*sa+dy*ca+y0)
+         if (xx>=0 and xx<sw and yy>=0 and yy<=sh) then
+            local color = sget(sx+xx,sy+yy)
+            if not (color == 11 or color == 14) then
+               pset(x+ix,y+iy,color)
+            end
+         end
+      end
+   end
 end
 
 __gfx__
