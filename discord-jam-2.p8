@@ -326,7 +326,9 @@ function player:update(dt)
    local radius = 2
    local speed = 15
    local rotation = dt * speed * 360
+   local time = 360 / rotation
    self.t += dt
+   self.t = mod(self.t, time)
    self.x += sin(self.t * dt * speed) * dt * speed * radius
    self.y += cos(self.t * dt * speed) * dt * speed * radius
    self.r += rotation * dt
