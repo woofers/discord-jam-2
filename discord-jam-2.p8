@@ -273,50 +273,6 @@ function screen:is_visible(x, y, width, height)
    return true
 end
 
-local menu = {}
-make_object(menu, gameobject)
-
-function menu:init(states)
-   self.game_states = states
-   self.stars = {}
-   for i=1, 20 do
-      self.stars[i] = star(random(1, 128), random(1, 128))
-   end
-end
-
-function menu:create()
-end
-
-function menu:destroy()
-end
-
-function menu:update(dt)
-   if (btn(x_key) and not self.exit) then
-      self.game_states:pop()
-   end
-   for i=1, #self.stars do
-      self.stars[i]:update(dt)
-   end
-end
-
-function menu:render(dt)
-   bg(1)
-
-   print("the pickle tickler", 17, 105, 7)
-   print("press space to start", 32, 113, 7)
-
-   -- draw planet
-   draw_planet(61, 34)
-   draw_redstar(12, 43)
-   draw_redstar(103, 87)
-   draw_bluestar(37, 29)
-   draw_bluestar(76, 99)
-   for i=1, #self.stars do
-      self.stars[i]:render(dt)
-   end
-
-end
-
 local player = {}
 make_object(player, sprite)
 
@@ -454,11 +410,12 @@ end
 local star = {}
 make_object(star, sprite)
 
-function star:init(x, y)
+function star:init(x, y, width, height, color)
    self.x = x
    self.y = y
-   self.width = random(1, 2)
-   self.height = random(1, 2)
+   self.width = width or random(1, 2)
+   self.height = height or random(1, 2)
+   self.color = color or 7
 end
 
 function star:update(dt)
@@ -470,7 +427,7 @@ function star:update(dt)
 end
 
 function star:render(dt)
-   draw_rectangle(self.x, self.y, self.width, self.height, 7)
+   draw_rectangle(self.x, self.y, self.width, self.height, self.color)
 end
 
 local play = {}
@@ -495,6 +452,55 @@ function play:init(states)
       self.planets[i] = planet(planet_offset + next_planet * (i - 1), y)
    end
    self.player = player(40, 25, self.planets)
+end
+
+local menu = {}
+make_object(menu, gameobject)
+
+function menu:init(states)
+   self.game_states = states
+   self.stars = {}
+   for i=1, 20 do
+   	  local color = random(1, 11)
+   	  if (color ~= 1 and color ~= 2 and color ~= 10) then
+   	  	color = 7
+   	  end
+      self.stars[i] = star(random(1, 128), random(1, 128), 
+      	random(0, 1) , random(0,1), color)
+   end
+end
+
+function menu:create()
+end
+
+function menu:destroy()
+end
+
+function menu:update(dt)
+   if (btn(x_key) and not self.exit) then
+      self.game_states:pop()
+   end
+end
+
+function menu:render(dt)
+   bg(0)
+
+   -- draw white stars
+   for i=1, #self.stars do
+      self.stars[i]:render(dt)
+   end
+   print("name", 17, 105, 7)
+   print("press space to start", 32, 113, 7)
+
+   -- draw planet
+   draw_planet(61, 34)
+   -- draw color stars
+   draw_redstar(12, 43)
+   draw_redstar(103, 87)
+   draw_bluestar(37, 29)
+   draw_bluestar(76, 99)
+  
+
 end
 
 function play:create()
@@ -590,17 +596,6 @@ function draw_rectangle(x, y, width, height, color, border, border_color)
        draw_rectangle(x + border, y + border, width - 2 * border, height - 2 * border, border_color)
    end
 end
-
-function draw_circle(x, y, radius, color, border, border_color)
-   border = border or 0
-   border_color = border_color or 0
-
-   circfill(x, y, radius, color)
-   if border > 0 then
-       draw_circle(x, y, radius - border, border_color)
-   end
-end
-
 
 function random(min, max)
    return min + flr(rnd(max - min))
