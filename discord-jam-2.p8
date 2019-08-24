@@ -306,11 +306,37 @@ function menu:render(dt)
    sspr(40, 32, 8, 8, 34, 2, 40, 40, true)
 end
 
+local star = {}
+make_object(star, sprite)
+
+function star:init(x, y)
+   self.x = x
+   self.y = y
+   self.width = random(1, 2)
+   self.height = random(1, 2)
+end
+
+function star:update(dt)
+   speed = 30
+   self.y += speed * random(1, 3) * dt
+   if self.y > screen_size - 1 then
+      self.y = random(0, 40)
+   end
+end
+
+function star:render(dt)
+   draw_rectangle(self.x, self.y, self.width, self.height, 7)
+end
+
 local play = {}
 make_object(play, gameobject)
 
 function play:init(states)
    self.game_states = states
+   self.stars = {}
+   for i=1, 40 do
+      self.stars[i] = star(random(1, 128), random(1, 128))
+   end
 end
 
 function play:create()
@@ -321,10 +347,16 @@ function play:destroy()
 end
 
 function play:update(dt)
+   for i=1, #self.stars do
+      self.stars[i]:update(dt)
+   end
 end
 
 function play:render(dt)
    reset_pallet()
+   for i=1, #self.stars do
+      self.stars[i]:render(dt)
+   end
    self:render_debug(dt)
 end
 
