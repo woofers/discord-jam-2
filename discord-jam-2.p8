@@ -661,6 +661,7 @@ function play:render(dt)
    end
    self.planets:render(dt)
    self.player:render(dt)
+   self:render_debug(dt)
 end
 
 function play:render_debug(dt)
@@ -680,10 +681,10 @@ function play:render_debug(dt)
    if (cpu > 0.8) cpu_color = 12
    if (mem > 250) mem_color = 12
 
-   print("cpu "..cpu, 0 * screen_size + 32, 0 * screen_size + 8, cpu_color)
-   print("mem "..mem, 0 * screen_size + 32, 0 * screen_size + 16, mem_color)
-   print("mem min "..min_mem, 0 * screen_size + 32, 0 * screen_size + 24, 6)
-   print("mem max "..max_mem, 0 * screen_size + 32, 0 * screen_size + 32, 6)
+   print("cpu "..cpu, self.player.x - 80 + 0 * screen_size + 32, 0 * screen_size + 8, cpu_color)
+   print("mem "..mem, self.player.x - 80 + 0 * screen_size + 32, 0 * screen_size + 16, mem_color)
+   print("mem min "..min_mem, self.player.x - 80 + 0 * screen_size + 32, 0 * screen_size + 24, 6)
+   print("mem max "..max_mem, self.player.x - 80 + 0 * screen_size + 32, 0 * screen_size + 32, 6)
 end
 
 function _init()
