@@ -385,7 +385,7 @@ function player:init(x, y, planets)
    self.x = x
    self.y = y
    self.r = 0
-   self.ray_distance = 43
+   self.ray_distance = 44
    self.planets = planets
    self.planet_colors = {1, 2, 7, 8, 9, 12}
    self:reset(t)
@@ -506,8 +506,8 @@ function player:can_jump(dt)
    local x, y = self:ray_location(self.ray_distance)
    local colors = { pget(x, y), pget(x + 1, y), pget(x, y + 1), pget(x + 2, y), pget(x, y + 2) }
    for i=1, #self.planet_colors do
-      for i=1, #colors do
-         if colors[i] == self.planet_colors[i] then
+      for j=1, #colors do
+         if colors[j] == self.planet_colors[i] then
             return true
          end
       end
@@ -1058,4 +1058,3 @@ __music__
 00 08094344
 00 3d3e4344
 00 3f424344
-
