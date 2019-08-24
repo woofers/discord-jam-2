@@ -13,6 +13,8 @@ arrows = { right, left, up, down }
 z_key = 4
 x_key = 5
 
+max_planets = 5
+
 function make_object(object)
    object.__index = object
    setmetatable(object, {
@@ -49,6 +51,62 @@ end
 function reset_pallet()
    pal()
    set_alpha_key()
+end
+
+local queue = {}
+make_object(queue)
+
+function queue:init(fifo)
+   self.queue = {}
+   self.first = 1
+   self.last = 0
+   self.cursor = 0
+end
+
+function queue:is_empty()
+   return self.first > self.last
+end
+
+function queue:next()
+   if self:is_empty() then return end
+   self.cursor += 1
+   if self.cursor > self.last then
+      self.cursor = self.first
+   end
+   local cur = self.queue[self.cursor]
+   return cur
+end
+
+function queue:push(item)
+   self.last += 1
+   self.queue[self.last] = item
+end
+
+function queue:pop()
+   if not self:is_empty() then
+      self.queue[self.first]:destroy()
+      self.queue[self.first] = nil
+      self.first += 1
+   end
+end
+
+function queue:peek()
+   if self:is_empty() then return end
+   return self.queue[self.first]
+end
+
+function queue:update(dt)
+   if self:is_empty() then return end
+   for i=self.first, self.last do
+      self.queue[i]:update(dt)
+   end
+end
+
+function queue:render(dt)
+   if (self:is_empty()) return
+   for i=self.first, self.last do
+      self.queue[i]:render(dt)
+   end
 end
 
 local stack = {}
@@ -273,7 +331,29 @@ function screen:is_visible(x, y, width, height)
    return true
 end
 
+local planet = {}
+make_object(planet, sprite)
+
+function planet:init(i)
+   local next_planet = 37
+   local planet_offset = 10
+   if not (mod(i, 2) == 0) then
+      self.y = 20
+   else
+      self.y = 80
+   end
+   self.x = planet_offset + next_planet * (i - 1)
+end
+
+function planet:update(dt)
+end
+
+function planet:render(dt)
+   draw_planet(self.x, self.y)
+end
+
 local player = {}
+
 make_object(player, sprite)
 
 function player:init(x, y, planets)
@@ -318,6 +398,7 @@ function player:update(dt)
          self:change_planet(mod(self.t + time / 2, time), direction)
       end
    end
+   camera(-50 + self.x, 0)
 end
 
 -- Hacky workaround which simulates player
@@ -351,55 +432,37 @@ function player:move_y(t, scale)
   return cos(t * scale) * scale * self.radius
 end
 
-function player:change_planet(t, planet)
-   planet = planet or 1
+function player:change_planet(t, p)
+   p = p or 1
    t = t or 0
-   if 0 < self.planet_idx + planet
-     and self.planet_idx + planet < #self.planets + 1 then
-      self.planet_idx += planet
-      local offset_x = 28
-      local offset_y = 10
-      self.planet = self.planets[self.planet_idx]
-      local new_pos = { x=self.planet.x + offset_x, y=self.planet.y + offset_y }
-      local offset_pos = self:set_pos(t)
-      new_pos.x += offset_pos.x
-      new_pos.y += offset_pos.y
-      self.new_r = mod(self:rotate_r(t, step) - self.r, 360)
-      self.translate_x = new_pos.x - self.x
-      self.translate_y = new_pos.y - self.y
-      self.count = 0
-      self:reset(t)
-   end
+   self.planet_idx += p
+   self.planet_idx = mod(self.planet_idx, max_planets)
+   local offset_x = 28
+   local offset_y = 10
+   self.planet = self.planets:next()
+   local new_pos = { x=self.planet.x + offset_x, y=self.planet.y + offset_y }
+   local offset_pos = self:set_pos(t)
+   new_pos.x += offset_pos.x
+   new_pos.y += offset_pos.y
+   self.new_r = mod(self:rotate_r(t, step) - self.r, 360)
+   self.translate_x = new_pos.x - self.x
+   self.translate_y = new_pos.y - self.y
+   self.count = 0
+   self:reset(t)
 end
 
 function player:render(dt)
    draw_player(self.x, self.y, self.r)
 end
 
-local planet = {}
-make_object(planet, sprite)
-
-
-function planet:init(x, y)
-   self.x = x
-   self.y = y
-end
-
-function planet:update(dt)
-end
-
-function planet:render(dt)
-   draw_planet(self.x, self.y)
-end
-
 function draw_planet(x, y)
    spr(12, x, y, 4, 5)
 end
 function draw_redstar(x, y)
-	spr(11, x, y)
+    spr(11, x, y)
 end
 function draw_bluestar(x, y)
-	spr(27, x, y)
+    spr(27, x, y)
 end
 
 function draw_player(x, y, r)
@@ -430,30 +493,6 @@ function star:render(dt)
    draw_rectangle(self.x, self.y, self.width, self.height, self.color)
 end
 
-local play = {}
-make_object(play, gameobject)
-
-function play:init(states)
-   self.game_states = states
-   self.stars = {}
-   for i=1, 40 do
-      self.stars[i] = star(random(1, 128), random(1, 128))
-   end
-   self.planets = {}
-   local next_planet = 45
-   local planet_offset = 5
-   local y
-   for i=1, 3 do
-      if not (mod(i, 2) == 0) then
-         y = 38
-      else
-         y = 90
-      end
-      self.planets[i] = planet(planet_offset + next_planet * (i - 1), y)
-   end
-   self.player = player(40, 25, self.planets)
-end
-
 local menu = {}
 make_object(menu, gameobject)
 
@@ -461,12 +500,12 @@ function menu:init(states)
    self.game_states = states
    self.stars = {}
    for i=1, 20 do
-   	  local color = random(1, 11)
-   	  if (color ~= 1 and color ~= 2 and color ~= 10) then
-   	  	color = 7
-   	  end
-      self.stars[i] = star(random(1, 128), random(1, 128), 
-      	random(0, 1) , random(0,1), color)
+      local color = random(1, 11)
+      if (color ~= 1 and color ~= 2 and color ~= 10) then
+        color = 7
+      end
+      self.stars[i] = star(random(1, 128), random(1, 128),
+        random(0, 1) , random(0,1), color)
    end
 end
 
@@ -499,8 +538,24 @@ function menu:render(dt)
    draw_redstar(103, 87)
    draw_bluestar(37, 29)
    draw_bluestar(76, 99)
-  
 
+
+end
+
+local play = {}
+make_object(play, gameobject)
+
+function play:init(states)
+   self.game_states = states
+   self.stars = {}
+   for i=1, 40 do
+      self.stars[i] = star(random(1, 128), random(1, 128))
+   end
+   self.planets = queue()
+   for i=1, max_planets do
+      self.planets:push(planet(i))
+   end
+   self.player = player(50, 10, self.planets)
 end
 
 function play:create()
@@ -514,9 +569,7 @@ function play:update(dt)
    for i=1, #self.stars do
       self.stars[i]:update(dt)
    end
-   for i=1, #self.planets do
-      self.planets[i]:update(dt)
-   end
+   self.planets:update(dt)
    self.player:update(dt)
 end
 
@@ -525,9 +578,7 @@ function play:render(dt)
    for i=1, #self.stars do
       self.stars[i]:render(dt)
    end
-   for i=1, #self.planets do
-      self.planets[i]:render(dt)
-   end
+   self.planets:render(dt)
    self.player:render(dt)
 end
 
