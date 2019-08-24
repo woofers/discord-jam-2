@@ -53,6 +53,62 @@ function reset_pallet()
    set_alpha_key()
 end
 
+local queue = {}
+make_object(queue)
+
+function queue:init(fifo)
+   self.queue = {}
+   self.first = 1
+   self.last = 0
+   self.cursor = 0
+end
+
+function queue:is_empty()
+   return self.first > self.last
+end
+
+function queue:next()
+   if self:is_empty() then return end
+   self.cursor += 1
+   if self.cursor > self.last then
+      self.cursor = self.first
+   end
+   local cur = self.queue[self.cursor]
+   return cur
+end
+
+function queue:push(item)
+   self.last += 1
+   self.queue[self.last] = item
+end
+
+function queue:pop()
+   if not self:is_empty() then
+      self.queue[self.first]:destroy()
+      self.queue[self.first] = nil
+      self.first += 1
+   end
+end
+
+function queue:peek()
+   if self:is_empty() then return end
+   return self.queue[self.first]
+end
+
+function queue:update(dt)
+   if self:is_empty() then return end
+   for i=self.first, self.last do
+      self.queue[i]:update(dt)
+   end
+end
+
+function queue:render(dt)
+   if (self:is_empty()) return
+   for i=self.first, self.last do
+      self.queue[i]:render(dt)
+   end
+end
+
 local stack = {}
 make_object(stack)
 
