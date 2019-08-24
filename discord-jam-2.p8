@@ -475,7 +475,7 @@ function player:change_planet(t, p)
    self.planet_idx = mod(self.planet_idx, max_planets)
    local offset_x = 28
    local offset_y = 10
-   self.planet = self.planets[self.planet_idx]
+   self.planet = self.planets:next()
    local new_pos = { x=self.planet.x + offset_x, y=self.planet.y + offset_y }
    local offset_pos = self:set_pos(t)
    new_pos.x += offset_pos.x
@@ -531,9 +531,9 @@ function play:init(states)
    for i=1, 40 do
       self.stars[i] = star(random(1, 128), random(1, 128))
    end
-   self.planets = {}
+   self.planets = queue()
    for i=1, max_planets do
-      self.planets[i] = planet(i)
+      self.planets:push(planet(i))
    end
    self.player = player(50, 10, self.planets)
 end
@@ -549,9 +549,7 @@ function play:update(dt)
    for i=1, #self.stars do
       self.stars[i]:update(dt)
    end
-   for i=1, #self.planets do
-      self.planets[i]:update(dt)
-   end
+   self.planets:update(dt)
    self.player:update(dt)
 end
 
@@ -560,9 +558,7 @@ function play:render(dt)
    for i=1, #self.stars do
       self.stars[i]:render(dt)
    end
-   for i=1, #self.planets do
-      self.planets[i]:render(dt)
-   end
+   self.planets:render(dt)
    self.player:render(dt)
 end
 
