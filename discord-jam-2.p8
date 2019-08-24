@@ -313,6 +313,8 @@ local player = {}
 make_object(player, sprite)
 
 function player:init(x, y, planets)
+   self.radius = 2
+   self.speed = 15
    self.x = x
    self.y = y
    self.planets = planets
@@ -327,20 +329,39 @@ function player:reset(t)
 end
 
 function player:update(dt)
-   local radius = 2
-   local speed = 15
-   local rotation = dt * speed * 360
+   local rotation = dt * self.speed * 360
    local time = 360 / rotation
-   local scale = dt * speed
+   local scale = dt * self.speed
    self.t += dt
    self.t = mod(self.t, time)
-   self.x += sin(self.t * scale) * scale * radius
-   self.y += cos(self.t * scale) * scale * radius
+   self.x += self:move_x(self.t, scale)
+   self.y += self:move_y(self.t, scale)
    self.r = rotation * self.t + 90
    self.r = mod(self.r, 360)
    if btnp(x_key) then
-      self:next_planet()
+      self:next_planet(mod(self.t + time / 2, time))
    end
+end
+
+-- Hacky workaround which simulates player
+-- movement loop to get correct location
+function player:set_pos(t)
+   if not t or t <= 0 then return end
+   local accum = 0
+   for i=0, t, step do
+     accum += step
+     local scale = step * self.speed
+     self.x += self:move_x(accum, scale)
+     self.y += self:move_y(accum, scale)
+   end
+end
+
+function player:move_x(t, scale)
+  return sin(t * scale) * scale * self.radius
+end
+
+function player:move_y(t, scale)
+  return cos(t * scale) * scale * self.radius
 end
 
 function player:next_planet(t)
@@ -351,6 +372,7 @@ function player:next_planet(t)
       local offset_y = 10
       self.planet = self.planets[self.planet_idx]
       self:set_location(self.planet.x + offset_x, self.planet.y + offset_y)
+      self:set_pos(t)
       self:reset(t)
    end
 end
@@ -852,4 +874,3 @@ __music__
 00 08094344
 00 3d3e4344
 00 3f424344
-
