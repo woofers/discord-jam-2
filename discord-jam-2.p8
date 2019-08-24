@@ -319,7 +319,7 @@ function player:init(x, y, planets)
    self.y = y
    self.planets = planets
    self.planet_idx = 0
-   self:next_planet()
+   self:change_planet()
 end
 
 function player:reset(t)
@@ -339,7 +339,9 @@ function player:update(dt)
    self.r = rotation * self.t + 90
    self.r = mod(self.r, 360)
    if btnp(x_key) then
-      self:next_planet(mod(self.t + time / 2, time))
+      local direction = -1
+      if (0 <= self.r and self.r <= 180) then direction = 1 end
+      self:change_planet(mod(self.t + time / 2, time), direction)
    end
 end
 
@@ -364,9 +366,10 @@ function player:move_y(t, scale)
   return cos(t * scale) * scale * self.radius
 end
 
-function player:next_planet(t)
+function player:change_planet(t, planet)
+   planet = planet or 1
    if #self.planets > self.planet_idx then
-      self.planet_idx += 1
+      self.planet_idx += planet
       local old_planet = self.planet
       local offset_x = 28
       local offset_y = 10
