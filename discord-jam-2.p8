@@ -470,6 +470,19 @@ function draw_player(x, y, r)
    spr_r(32, x, y, r, 2, 2)
 end
 
+function blinking_text()
+	local blink_sequence = {0, 0, 0, 5, 6, 7, 7, 7, 7, 7, 6, 5, 0}
+	blink_frame += 1
+	if blink_frame>blink_speed then
+		blink_index += 1
+		blink_frame = 0
+	end
+	if blink_index > #blink_sequence then
+		blink_index = 1
+	end
+	blink_color = blink_sequence[blink_index]
+end
+
 local star = {}
 make_object(star, sprite)
 
@@ -507,6 +520,10 @@ function menu:init(states)
       self.stars[i] = star(random(1, 128), random(1, 128),
         random(0, 1) , random(0,1), color)
    end
+   blink_color = 0
+   blink_index = 1
+   blink_speed = 13
+   blink_frame = 0
 end
 
 function menu:create()
@@ -523,13 +540,13 @@ end
 
 function menu:render(dt)
    bg(0)
-
+   blinking_text()
    -- draw white stars
    for i=1, #self.stars do
       self.stars[i]:render(dt)
    end
    print("name", 17, 105, 7)
-   print("press space to start", 32, 113, 7)
+   print("press space to start", 32, 113, blink_color)
 
    -- draw planet
    draw_planet(61, 34)
