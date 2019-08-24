@@ -306,6 +306,24 @@ function menu:render(dt)
    sspr(40, 32, 8, 8, 34, 2, 40, 40, true)
 end
 
+local planet = {}
+make_object(planet, sprite)
+
+function planet:init(x, y)
+   self.x = x
+   self.y = y
+   self.width = random(20, 30)
+   self.height = random(20, 30)
+end
+
+function planet:update(dt)
+end
+
+function planet:render(dt)
+   draw_rectangle(self.x, self.y, self.width, self.height, 6)
+end
+
+
 local star = {}
 make_object(star, sprite)
 
@@ -337,6 +355,18 @@ function play:init(states)
    for i=1, 40 do
       self.stars[i] = star(random(1, 128), random(1, 128))
    end
+   self.planets = {}
+   local next_planet = 45
+   local planet_offset = 5
+   local y
+   for i=1, 5 do
+      if not (mod(i, 2) == 0) then
+         y = 38
+      else
+         y = 90
+      end
+      self.planets[i] = planet(planet_offset + next_planet * (i - 1), y)
+   end
 end
 
 function play:create()
@@ -350,12 +380,18 @@ function play:update(dt)
    for i=1, #self.stars do
       self.stars[i]:update(dt)
    end
+   for i=1, #self.planets do
+      self.planets[i]:update(dt)
+   end
 end
 
 function play:render(dt)
    reset_pallet()
    for i=1, #self.stars do
       self.stars[i]:render(dt)
+   end
+   for i=1, #self.planets do
+      self.planets[i]:render(dt)
    end
    self:render_debug(dt)
 end
