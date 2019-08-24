@@ -278,6 +278,10 @@ make_object(menu, gameobject)
 
 function menu:init(states)
    self.game_states = states
+   self.stars = {}
+   for i=1, 20 do
+      self.stars[i] = star(random(1, 128), random(1, 128))
+   end
 end
 
 function menu:create()
@@ -290,6 +294,9 @@ function menu:update(dt)
    if (btn(x_key) and not self.exit) then
       self.game_states:pop()
    end
+   for i=1, #self.stars do
+      self.stars[i]:update(dt)
+   end
 end
 
 function menu:render(dt)
@@ -299,9 +306,14 @@ function menu:render(dt)
    print("press space to start", 32, 113, 7)
 
    -- draw planet
-   draw_planet(64,30)
-   draw_redstar(50,50)
-   draw_bluestar(10, 15)
+   draw_planet(61, 34)
+   draw_redstar(12, 43)
+   draw_redstar(103, 87)
+   draw_bluestar(37, 29)
+   draw_bluestar(76, 99)
+   for i=1, #self.stars do
+      self.stars[i]:render(dt)
+   end
 
 end
 
