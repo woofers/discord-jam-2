@@ -368,7 +368,8 @@ end
 
 function player:change_planet(t, planet)
    planet = planet or 1
-   if #self.planets > self.planet_idx then
+   if 0 < self.planet_idx + planet
+     and self.planet_idx + planet < #self.planets + 1 then
       self.planet_idx += planet
       local old_planet = self.planet
       local offset_x = 28
@@ -444,7 +445,7 @@ function play:init(states)
    local next_planet = 45
    local planet_offset = 5
    local y
-   for i=1, 5 do
+   for i=1, 3 do
       if not (mod(i, 2) == 0) then
          y = 38
       else
@@ -481,7 +482,6 @@ function play:render(dt)
       self.planets[i]:render(dt)
    end
    self.player:render(dt)
-   self:render_debug(dt)
 end
 
 function play:render_debug(dt)
