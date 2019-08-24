@@ -470,10 +470,10 @@ function draw_player(x, y, r)
    spr_r(32, x, y, r, 2, 2)
 end
 
-function blinking_text()
+function blinking_text(dt)
 	local blink_sequence = {0, 0, 0, 5, 6, 7, 7, 7, 7, 7, 6, 5, 0}
 	blink_frame += 1
-	if blink_frame>blink_speed then
+	if blink_frame > blink_speed * dt then
 		blink_index += 1
 		blink_frame = 0
 	end
@@ -522,7 +522,7 @@ function menu:init(states)
    end
    blink_color = 0
    blink_index = 1
-   blink_speed = 13
+   blink_speed = 13 * 60
    blink_frame = 0
 end
 
@@ -540,7 +540,7 @@ end
 
 function menu:render(dt)
    bg(0)
-   blinking_text()
+   blinking_text(dt)
    -- draw white stars
    for i=1, #self.stars do
       self.stars[i]:render(dt)
