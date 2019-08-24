@@ -309,9 +309,15 @@ end
 local player = {}
 make_object(player, sprite)
 
-function player:init(x, y)
+function player:init(x, y, planets)
    self.x = x
    self.y = y
+   self.planets = planets
+   self.planet_idx = 0
+   self:next_planet()
+end
+
+function player:reset()
    self.t = 0
    self.r = 90
 end
@@ -324,6 +330,18 @@ function player:update(dt)
    self.x += sin(self.t * dt * speed) * dt * speed * radius
    self.y += cos(self.t * dt * speed) * dt * speed * radius
    self.r += rotation * dt
+   if btnp(x_key) then
+      self:next_planet()
+   end
+end
+
+function player:next_planet()
+   if #self.planets > self.planet_idx then
+      self.planet_idx += 1
+      self.planet = self.planets[self.planet_idx]
+      self:set_location(self.planet.x + 30, self.planet.y + 12)
+      self:reset()
+   end
 end
 
 function player:render(dt)
@@ -336,8 +354,6 @@ make_object(planet, sprite)
 function planet:init(x, y)
    self.x = x
    self.y = y
-   self.width = random(20, 30)
-   self.height = random(20, 30)
 end
 
 function planet:update(dt)
@@ -388,7 +404,6 @@ function play:init(states)
       self.stars[i] = star(random(1, 128), random(1, 128))
    end
    self.planets = {}
-   self.player = player(35, 50)
    local next_planet = 45
    local planet_offset = 5
    local y
@@ -400,6 +415,7 @@ function play:init(states)
       end
       self.planets[i] = planet(planet_offset + next_planet * (i - 1), y)
    end
+   self.player = player(0, 0, self.planets)
 end
 
 function play:create()
