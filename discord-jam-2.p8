@@ -469,18 +469,18 @@ function play:init(states)
       self.stars[i] = star(random(1, 128), random(1, 128))
    end
    self.planets = {}
-   local next_planet = 45
-   local planet_offset = 5
+   local next_planet = 37
+   local planet_offset = 10
    local y
    for i=1, 3 do
       if not (mod(i, 2) == 0) then
-         y = 38
+         y = 20
       else
-         y = 90
+         y = 80
       end
       self.planets[i] = planet(planet_offset + next_planet * (i - 1), y)
    end
-   self.player = player(40, 25, self.planets)
+   self.player = player(50, 10, self.planets)
 end
 
 function play:create()
