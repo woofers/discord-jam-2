@@ -317,7 +317,7 @@ function player:init(x, y, planets)
    self.speed = 15
    self.x = x
    self.y = y
-   self.r = 90
+   self.r = 0
    self.planets = planets
    self.planet_idx = 0
    self:reset(t)
@@ -330,7 +330,7 @@ function player:reset(t)
 end
 
 function player:update(dt)
-   local jump_time = 2
+   local jump_time = 0.9
    if jump_time >= self.count then
       self.count += dt
       local x = self.translate_x * dt / jump_time
@@ -480,7 +480,7 @@ function play:init(states)
       end
       self.planets[i] = planet(planet_offset + next_planet * (i - 1), y)
    end
-   self.player = player(0, 0, self.planets)
+   self.player = player(40, 25, self.planets)
 end
 
 function play:create()
