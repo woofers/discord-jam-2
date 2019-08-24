@@ -491,22 +491,25 @@ end
 
 function player:render(dt)
    draw_player(self.x, self.y, self.r)
+   draw_ray = true
    if draw_ray then
-      for i=0, self.ray_distance do
-         local x, y = self:ray_location(i)
-         pset(x, y, 7)
-      end
+      local x, y = self:ray_location(self.ray_distance)
+      pset(x, y, 7)
+      pset(x + 1, y, 7)
+      pset(x, y + 1, 7)
+      pset(x + 2, y, 7)
+      pset(x, y + 2, 7)
    end
 end
 
 function player:can_jump(dt)
    local x, y = self:ray_location(self.ray_distance)
-   local color = pget(x, y)
-   printh(color)
-   printh(self.planet_colors[color])
-   for i=0, #self.planet_colors do
-      if color == self.planet_colors[i] then
-         return true
+   local colors = { pget(x, y), pget(x + 1, y), pget(x, y + 1), pget(x + 2, y), pget(x, y + 2) }
+   for i=1, #self.planet_colors do
+      for i=1, #colors do
+         if colors[i] == self.planet_colors[i] then
+            return true
+         end
       end
    end
    return false
