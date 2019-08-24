@@ -354,6 +354,7 @@ function player:update(dt)
          self:change_planet(mod(self.t + time / 2, time), direction)
       end
    end
+   camera(-50 + self.x, 0)
 end
 
 -- Hacky workaround which simulates player
