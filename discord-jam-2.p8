@@ -317,45 +317,66 @@ function player:init(x, y, planets)
    self.speed = 15
    self.x = x
    self.y = y
+   self.r = 0
    self.planets = planets
    self.planet_idx = 0
+   self:reset(t)
    self:change_planet()
 end
 
 function player:reset(t)
    t = t or 0
    self.t = t
-   self.r = 90
 end
 
 function player:update(dt)
-   local rotation = dt * self.speed * 360
-   local time = 360 / rotation
-   local scale = dt * self.speed
-   self.t += dt
-   self.t = mod(self.t, time)
-   self.x += self:move_x(self.t, scale)
-   self.y += self:move_y(self.t, scale)
-   self.r = rotation * self.t + 90
-   self.r = mod(self.r, 360)
-   if btnp(x_key) then
-      local direction = -1
-      if (0 <= self.r and self.r <= 180) then direction = 1 end
-      self:change_planet(mod(self.t + time / 2, time), direction)
+   local jump_time = 0.9
+   if jump_time >= self.count then
+      self.count += dt
+      local x = self.translate_x * dt / jump_time
+      local y = self.translate_y * dt / jump_time
+      self.x += x
+      self.y += y
+      self.r += self.new_r * dt / jump_time
+   else
+      local rotation = dt * self.speed * 360
+      local time = 360 / rotation
+      local scale = dt * self.speed
+      self.t += dt
+      self.t = mod(self.t, time)
+      self.x += self:move_x(self.t, scale)
+      self.y += self:move_y(self.t, scale)
+      self.r = self:rotate_r(self.t, dt)
+      self.r = mod(self.r, 360)
+      if btnp(x_key) then
+         local direction = -1
+         if (0 <= self.r and self.r <= 180) then direction = 1 end
+         self:change_planet(mod(self.t + time / 2, time), direction)
+      end
    end
 end
 
 -- Hacky workaround which simulates player
 -- movement loop to get correct location
 function player:set_pos(t)
-   if not t or t <= 0 then return end
    local accum = 0
+   local pos = { x=0, y=0 }
+   if not t or t <= 0 then return pos end
    for i=0, t, step do
      accum += step
      local scale = step * self.speed
-     self.x += self:move_x(accum, scale)
-     self.y += self:move_y(accum, scale)
+     pos.x += self:move_x(accum, scale)
+     pos.y += self:move_y(accum, scale)
    end
+   return pos
+end
+
+function player:rotate_r(t, dt)
+   return self:rotation_speed(dt) * t + 90
+end
+
+function player:rotation_speed(dt)
+   return dt * self.speed * 360
 end
 
 function player:move_x(t, scale)
@@ -368,15 +389,21 @@ end
 
 function player:change_planet(t, planet)
    planet = planet or 1
+   t = t or 0
    if 0 < self.planet_idx + planet
      and self.planet_idx + planet < #self.planets + 1 then
       self.planet_idx += planet
-      local old_planet = self.planet
       local offset_x = 28
       local offset_y = 10
       self.planet = self.planets[self.planet_idx]
-      self:set_location(self.planet.x + offset_x, self.planet.y + offset_y)
-      self:set_pos(t)
+      local new_pos = { x=self.planet.x + offset_x, y=self.planet.y + offset_y }
+      local offset_pos = self:set_pos(t)
+      new_pos.x += offset_pos.x
+      new_pos.y += offset_pos.y
+      self.new_r = mod(self:rotate_r(t, step) - self.r, 360)
+      self.translate_x = new_pos.x - self.x
+      self.translate_y = new_pos.y - self.y
+      self.count = 0
       self:reset(t)
    end
 end
@@ -453,7 +480,7 @@ function play:init(states)
       end
       self.planets[i] = planet(planet_offset + next_planet * (i - 1), y)
    end
-   self.player = player(0, 0, self.planets)
+   self.player = player(40, 25, self.planets)
 end
 
 function play:create()
