@@ -385,7 +385,9 @@ function player:init(x, y, planets)
    self.x = x
    self.y = y
    self.r = 0
+   self.ray_distance = 43
    self.planets = planets
+   self.planet_colors = {1, 2, 7, 8, 9, 12}
    self:reset(t)
    self:change_planet()
 end
@@ -415,9 +417,13 @@ function player:update(dt)
       self.r = self:rotate_r(self.t, dt)
       self.r = mod(self.r, 360)
       if btnp(x_key) then
-         local direction = -1
-         if (0 <= self.r and self.r <= 180) then direction = 1 end
-         self:change_planet(mod(self.t + time / 2, time), direction)
+         if self:can_jump(dt) then
+            local direction = -1
+            if (0 <= self.r and self.r <= 180) then direction = 1 end
+            self:change_planet(mod(self.t + time / 2, time), direction)
+         else
+            self:die()
+         end
       end
    end
    camera(-50 + self.x, 0)
@@ -436,6 +442,10 @@ function player:set_pos(t)
      pos.y += self:move_y(accum, scale)
    end
    return pos
+end
+
+function player:die()
+
 end
 
 function player:rotate_r(t, dt)
@@ -481,14 +491,29 @@ end
 
 function player:render(dt)
    draw_player(self.x, self.y, self.r)
-   self:cast(dt)
+   if draw_ray then
+      for i=0, self.ray_distance do
+         local x, y = self:ray_location(i)
+         pset(x, y, 7)
+      end
+   end
 end
 
-function player:cast(dt)
-   for i=0, 42 do
-      local x, y = rotate(self.x + i, self.y, self.x + 5, self.y + 10, (-self.r + 90) / 360)
-      pset(x, y, 7)
+function player:can_jump(dt)
+   local x, y = self:ray_location(self.ray_distance)
+   local color = pget(x, y)
+   printh(color)
+   printh(self.planet_colors[color])
+   for i=0, #self.planet_colors do
+      if color == self.planet_colors[i] then
+         return true
+      end
    end
+   return false
+end
+
+function player:ray_location(r)
+   return rotate(self.x + r, self.y, self.x + 5, self.y + 10, (-self.r + 90) / 360)
 end
 
 function draw_planet(x, y)
@@ -593,8 +618,6 @@ function menu:render(dt)
    draw_redstar(103, 87)
    draw_bluestar(37, 29)
    draw_bluestar(76, 99)
-
-
 end
 
 local play = {}
