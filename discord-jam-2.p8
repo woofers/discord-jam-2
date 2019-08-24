@@ -332,6 +332,7 @@ function player:update(dt)
    self.x += sin(self.t * dt * speed) * dt * speed * radius
    self.y += cos(self.t * dt * speed) * dt * speed * radius
    self.r += rotation * dt
+   self.r = mod(self.r, 360)
    if btnp(x_key) then
       self:next_planet()
    end
