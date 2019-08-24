@@ -493,22 +493,6 @@ function star:render(dt)
    draw_rectangle(self.x, self.y, self.width, self.height, self.color)
 end
 
-local play = {}
-make_object(play, gameobject)
-
-function play:init(states)
-   self.game_states = states
-   self.stars = {}
-   for i=1, 40 do
-      self.stars[i] = star(random(1, 128), random(1, 128))
-   end
-   self.planets = queue()
-   for i=1, max_planets do
-      self.planets:push(planet(i))
-   end
-   self.player = player(50, 10, self.planets)
-end
-
 local menu = {}
 make_object(menu, gameobject)
 
@@ -556,6 +540,22 @@ function menu:render(dt)
    draw_bluestar(76, 99)
 
 
+end
+
+local play = {}
+make_object(play, gameobject)
+
+function play:init(states)
+   self.game_states = states
+   self.stars = {}
+   for i=1, 40 do
+      self.stars[i] = star(random(1, 128), random(1, 128))
+   end
+   self.planets = queue()
+   for i=1, max_planets do
+      self.planets:push(planet(i))
+   end
+   self.player = player(50, 10, self.planets)
 end
 
 function play:create()
