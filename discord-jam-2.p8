@@ -320,8 +320,11 @@ function planet:update(dt)
 end
 
 function planet:render(dt)
-   draw_rectangle(self.x, self.y, self.width, self.height, 6)
-   circle(self.x, self.y, self.width, self.height, max(self.width, self.height), 13)
+   draw_planet(self.x, self.y)
+end
+
+function draw_planet(x, y)
+   spr(12, x, y, 4, 5)
 end
 
 
@@ -762,4 +765,3 @@ __music__
 00 08094344
 00 3d3e4344
 00 3f424344
-
