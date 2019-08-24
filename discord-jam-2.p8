@@ -13,7 +13,7 @@ arrows = { right, left, up, down }
 z_key = 4
 x_key = 5
 
-max_planets = 5
+max_planets = 6
 
 function make_object(object)
    object.__index = object
@@ -73,8 +73,20 @@ function queue:next()
    if self.cursor > self.last then
       self.cursor = self.first
    end
-   local cur = self.queue[self.cursor]
-   return cur
+   return self.queue[self.cursor]
+end
+
+function queue:prev()
+   if self:is_empty() then return end
+   self.cursor -= 1
+   if self.cursor < self.first then
+      self.cursor = self.last
+   end
+   return self.queue[self.cursor]
+end
+
+function queue:remaining()
+   return self.last - self.cursor
 end
 
 function queue:push(item)
@@ -88,6 +100,10 @@ function queue:pop()
       self.queue[self.first] = nil
       self.first += 1
    end
+end
+
+function queue:count()
+   return self.last + 1
 end
 
 function queue:peek()
@@ -363,7 +379,6 @@ function player:init(x, y, planets)
    self.y = y
    self.r = 0
    self.planets = planets
-   self.planet_idx = 0
    self:reset(t)
    self:change_planet()
 end
@@ -435,11 +450,17 @@ end
 function player:change_planet(t, p)
    p = p or 1
    t = t or 0
-   self.planet_idx += p
-   self.planet_idx = mod(self.planet_idx, max_planets)
    local offset_x = 28
    local offset_y = 10
-   self.planet = self.planets:next()
+   if p >= 0 then
+      self.planet = self.planets:next()
+   else
+      self.planet = self.planets:prev()
+   end
+   if self.planets:remaining() <= 2 then
+      self.planets:pop()
+      self.planets:push(planet(self.planets:count()))
+   end
    local new_pos = { x=self.planet.x + offset_x, y=self.planet.y + offset_y }
    local offset_pos = self:set_pos(t)
    new_pos.x += offset_pos.x
