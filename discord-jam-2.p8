@@ -317,8 +317,9 @@ function player:init(x, y, planets)
    self:next_planet()
 end
 
-function player:reset()
-   self.t = 0
+function player:reset(t)
+   t = t or 0
+   self.t = t
    self.r = 90
 end
 
@@ -331,19 +332,19 @@ function player:update(dt)
    self.t = mod(self.t, time)
    self.x += sin(self.t * dt * speed) * dt * speed * radius
    self.y += cos(self.t * dt * speed) * dt * speed * radius
-   self.r += rotation * dt
+   self.r = rotation * self.t + 90
    self.r = mod(self.r, 360)
    if btnp(x_key) then
       self:next_planet()
    end
 end
 
-function player:next_planet()
+function player:next_planet(t)
    if #self.planets > self.planet_idx then
       self.planet_idx += 1
       self.planet = self.planets[self.planet_idx]
       self:set_location(self.planet.x + 28, self.planet.y + 10)
-      self:reset()
+      self:reset(t)
    end
 end
 
