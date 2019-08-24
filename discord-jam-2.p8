@@ -834,20 +834,20 @@ function menu:update(dt)
 end
 
 function menu:render(dt)
-   bg(8)
+   bg(1)
 
-   print("the devil with a new ram", 17, 105, 7)
-   print("press ❎ to start", 32, 113, 7)
+   print("the pickle tickler", 17, 105, 7)
+   print("press space to start", 32, 113, 7)
+
+   --drawing a moon
+   draw_circle(64, 128, 40, 5, 1, 6)
 
    -- draw frame
-   draw_rectangle(39, 42, 50, 50, 9, 2, 8)
+   --draw_rectangle(39, 42, 50, 50, 9, 2, 8)
 
    -- draw ram
-   sspr(0, 32, 16, 16, 41, 46, 80, 80)
+   --sspr(0, 32, 16, 16, 41, 46, 80, 80)
 
-   -- draw horns
-   sspr(40, 32, 8, 8, 55, 2, 40, 40)
-   sspr(40, 32, 8, 8, 34, 2, 40, 40, true)
 end
 
 local play = {}
@@ -936,6 +936,17 @@ function draw_rectangle(x, y, width, height, color, border, border_color)
        draw_rectangle(x + border, y + border, width - 2 * border, height - 2 * border, border_color)
    end
 end
+
+function draw_circle(x, y, radius, color, border, border_color)
+   border = border or 0
+   border_color = border_color or 0
+
+   circfill(x, y, radius, color)
+   if border > 0 then
+       draw_circle(x, y, radius - border, border_color)
+   end
+end
+
 
 function random(min, max)
    return min + flr(rnd(max - min))
