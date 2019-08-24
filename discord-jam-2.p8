@@ -42,10 +42,6 @@ function set_alpha_key()
    palt(0, false)
    palt(11, true)
    palt(14, true)
-
-   --pal(1, 2)
-   --pal(7, 9)
-   --pal(12, 8)
 end
 
 function reset_pallet()
@@ -359,13 +355,24 @@ function planet:init(i)
       self.y = 80
    end
    self.x = planet_offset + next_planet * (i - 1)
+   self.color = (random(0, 2) == 1)
 end
 
 function planet:update(dt)
 end
 
 function planet:render(dt)
+   if self.color then
+      red_pallet()
+   end
    draw_planet(self.x, self.y)
+   reset_pallet()
+end
+
+function red_pallet()
+   pal(1, 2)
+   pal(7, 9)
+   pal(12, 8)
 end
 
 local player = {}
