@@ -40,6 +40,10 @@ function set_alpha_key()
    palt(0, false)
    palt(11, true)
    palt(14, true)
+
+   --pal(1, 2)
+   --pal(7, 9)
+   --pal(12, 8)
 end
 
 function reset_pallet()
