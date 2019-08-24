@@ -385,7 +385,7 @@ function player:init(x, y, planets)
    self.x = x
    self.y = y
    self.r = 0
-   self.ray_distance = 43
+   self.ray_distance = 44
    self.planets = planets
    self.planet_colors = {1, 2, 7, 8, 9, 12}
    self:reset(t)
@@ -506,8 +506,8 @@ function player:can_jump(dt)
    local x, y = self:ray_location(self.ray_distance)
    local colors = { pget(x, y), pget(x + 1, y), pget(x, y + 1), pget(x + 2, y), pget(x, y + 2) }
    for i=1, #self.planet_colors do
-      for i=1, #colors do
-         if colors[i] == self.planet_colors[i] then
+      for j=1, #colors do
+         if colors[j] == self.planet_colors[i] then
             return true
          end
       end
@@ -661,6 +661,7 @@ function play:render(dt)
    end
    self.planets:render(dt)
    self.player:render(dt)
+   self:render_debug(dt)
 end
 
 function play:render_debug(dt)
@@ -680,10 +681,10 @@ function play:render_debug(dt)
    if (cpu > 0.8) cpu_color = 12
    if (mem > 250) mem_color = 12
 
-   print("cpu "..cpu, 0 * screen_size + 32, 0 * screen_size + 8, cpu_color)
-   print("mem "..mem, 0 * screen_size + 32, 0 * screen_size + 16, mem_color)
-   print("mem min "..min_mem, 0 * screen_size + 32, 0 * screen_size + 24, 6)
-   print("mem max "..max_mem, 0 * screen_size + 32, 0 * screen_size + 32, 6)
+   print("cpu "..cpu, self.player.x - 80 + 0 * screen_size + 32, 0 * screen_size + 8, cpu_color)
+   print("mem "..mem, self.player.x - 80 + 0 * screen_size + 32, 0 * screen_size + 16, mem_color)
+   print("mem min "..min_mem, self.player.x - 80 + 0 * screen_size + 32, 0 * screen_size + 24, 6)
+   print("mem max "..max_mem, self.player.x - 80 + 0 * screen_size + 32, 0 * screen_size + 32, 6)
 end
 
 function _init()
@@ -921,7 +922,7 @@ eeeeeeeebbbbbbbbeeeeeeeebbbbbbbbeeeeeeeebbb666bb89aaaa98bbbbbbbbeeeeeeeebbbbbbbb
 0000000000000000000101010101010110101010101010000000000000000000eeeeeeee11999911eeeeeeeeb9aaaa9aeeeeeeeebbbbbbbbeeeeeeeebbbbbbbb
 0000000000000000000000101010101001010101010000000000000000000000eeeeeeeeb111111beeeeeeee9aaaa9a9eeeeeeeebbbbbbbbeeeeeeeebbbbbbbb
 __gff__
-0202020000102080800101010000010002020200001020404001000100000100020202000000000000010101000001000202020000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+0280808080808080808080018080818002808080808080808080800180808180028080808080800000000001808080800280800080808000000000008080808000000000000000000000000000808000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 0000000000000000000000000000000000000000000000000000000000000100000000000000000000000202020101010000000000000000000002020201020100000000000000000000020202010101000000000000000000000000102080800000000000000000000000001020404000000000000000000000000000000000
 __map__
 090a0a0a0a0a0a0a0a0a0a0a0a0a0a0b090a0a0a0a0a0a0a0a0a0a0a0a0a0a0b090a0a0a0a0a0a0a0a0a0a0a0a0a0a0b090a0a0a0a0a0a0a0a0a0a0a0a0a0a0b090a0a0a0a0a0a0a0a0a0a0a0a0a0a0b090a0a0a0a0a0a0a0a0a0a0a0a0a0a0b090a0a0a0a0a0a0a0a0a0a0a0a0a0a0b090a0a0a0a0a0a0a0a0a0a0a0a0a0a0b
