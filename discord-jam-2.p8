@@ -370,6 +370,15 @@ function planet:init(i)
    self.size = planet_size()
 end
 
+function planet:radius()
+   if self.size == 'large' then
+      return 2
+   elseif self.size == 'normal' then
+      return 1.5
+   end
+   return 0.75
+end
+
 function planet:update(dt)
 end
 
@@ -460,7 +469,7 @@ function player:die()
 end
 
 function player:radius()
-   return 2
+   return self.planet:radius()
 end
 
 function player:rotate_r(t, dt)
