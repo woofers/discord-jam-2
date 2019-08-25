@@ -469,7 +469,7 @@ function player:init(x, y, planets, states)
    self.r = 0
    self.ray_deadzone = 18
    self.ray_distance = 140
-   self.ray_thickness = 12
+   self.ray_thickness = 14
    self.planets = planets
    self.planet_colors = {1, 2, 7, 8, 9, 12}
    self:reset()
@@ -639,7 +639,7 @@ end
 
 function player:ray_location(r, t)
    t = t or 0
-   return rotate(self.x + r, self.y + t, self.x + 5, self.y + 10, (-self.r + 10) / 360)
+   return rotate(self.x + r, self.y + t, self.x + 5, self.y + 10, (-self.r + 5) / 360)
 end
 
 function draw_planet(x, y, size, alt)
@@ -1404,4 +1404,3 @@ __music__
 00 08094344
 00 3d3e4344
 00 3f424344
-
