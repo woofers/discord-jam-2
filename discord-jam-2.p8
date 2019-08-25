@@ -864,7 +864,17 @@ function menu:render(dt)
    for i=1, #self.stars do
       self.stars[i]:render(dt)
    end
-   print("name", 17, 105, 7)
+   local name = blink_color
+   if name == 0 then
+      name = 8
+   elseif name == 5 then
+      name = 14
+   elseif name == 6 then
+      name = 2
+   elseif name == 7 then
+      name = 0
+   end
+   print("perihelion", 17, 105, name)
    print("press space to start", 32, 113, blink_color)
 
    -- draw planet
