@@ -956,17 +956,7 @@ function menu:render(dt)
    for i=1, #self.stars do
       self.stars[i]:render(dt)
    end
-   local name = blink_color
-   if name == 0 then
-      name = 8
-   elseif name == 5 then
-      name = 14
-   elseif name == 6 then
-      name = 2
-   elseif name == 7 then
-      name = 0
-   end
-   print("doge: bois", 30, 100, name)
+   print("doge: bois", 30, 100, 7)
    print("press space to start", 32, 113, blink_color)
 
    -- draw planet
