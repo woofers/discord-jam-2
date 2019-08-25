@@ -982,7 +982,7 @@ end
 
 function intro:create()
    intro_index = 1
-   intro_speed = 30 * 60
+   intro_speed = 35 * 60
    intro_frame = 0
    intropop = false
 end
