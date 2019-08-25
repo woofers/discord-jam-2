@@ -359,12 +359,7 @@ make_object(planet, sprite)
 function planet:init(i)
    local next_planet = 37
    local planet_offset = 10
-   if not (mod(i, 2) == 0) then
-      self.y = 20
-   else
-      self.y = 80
-   end
-   self.x = planet_offset + next_planet * (i - 1)
+   self.x, self.y = self:spawn_location(i)
    self.color = (random(0, 2) == 1)
    self.alt = random(1, 3)
    self.size = planet_size()
@@ -377,6 +372,33 @@ function planet:radius()
       return 1.75
    end
    return 1.15
+end
+
+function planet:spawn_location(i)
+   if self.size == 'large' then
+      local y
+      if not (mod(i, 2) == 0) then
+         y = 20
+      else
+         y = 80
+      end
+      return 10 + 37 * (i - 1), y
+   elseif self.size == 'normal' then
+      local y
+      if not (mod(i, 2) == 0) then
+         y = 20
+      else
+         y = 80
+      end
+      return 20 + 37 * (i - 1), y
+   end
+   local y
+   if not (mod(i, 2) == 0) then
+      y = 30
+   else
+      y = 70
+   end
+   return 30 + 37 * (i - 1), y
 end
 
 function planet:offset()
