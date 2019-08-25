@@ -456,8 +456,9 @@ function player:init(x, y, planets, states)
    self.x = x
    self.y = y
    self.r = 0
-   self.ray_deadzone = 10
-   self.ray_distance = 80
+   self.ray_deadzone = 15
+   self.ray_distance = 140
+   self.ray_thickness = 12
    self.planets = planets
    self.planet_colors = {1, 2, 7, 8, 9, 12}
    self:reset()
@@ -576,6 +577,7 @@ function player:change_planet(t)
    end
    spawn_new()
    spawn_new()
+   spawn_new()
    local new_pos = { x=self.planet.x + offset_x, y=self.planet.y + offset_y }
    local offset_pos = self:set_pos(t)
    new_pos.x += offset_pos.x
@@ -589,10 +591,12 @@ end
 
 function player:render(dt)
    draw_player(self.x, self.y, self.r)
-   if draw_ray then
+   if btn(z_key) then
       for i=self.ray_deadzone, self.ray_distance do
-         local x, y = self:ray_location(i)
-         pset(x, y, 14)
+         for j=0, self.ray_thickness do
+           local x, y = self:ray_location(i, j)
+           pset(x, y, 14)
+         end
       end
    end
    pset(self.hit_x, self.hit_y, 3)
@@ -600,20 +604,23 @@ end
 
 function player:hit_location(dt)
    for i=self.ray_deadzone, self.ray_distance do
-      local x, y = self:ray_location(i)
-      local color = pget(x, y)
-      for j=1, #self.planet_colors do
-         if color == self.planet_colors[j] then
-            self.hit_x, self.hit_y = x, y
-            return x, y
+      for t=0, self.ray_thickness do
+         local x, y = self:ray_location(i, t)
+         local color = pget(x, y)
+         for j=1, #self.planet_colors do
+            if color == self.planet_colors[j] then
+               self.hit_x, self.hit_y = x, y
+               return x, y
+            end
          end
       end
    end
    return false, false
 end
 
-function player:ray_location(r)
-   return rotate(self.x + r, self.y, self.x + 5, self.y + 10, (-self.r) / 360)
+function player:ray_location(r, t)
+   t = t or 0
+   return rotate(self.x + r, self.y + t, self.x + 5, self.y + 10, (-self.r + 10) / 360)
 end
 
 function draw_planet(x, y, size, alt)
