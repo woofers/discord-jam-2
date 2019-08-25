@@ -489,7 +489,7 @@ function player:init(x, y, planets, states)
    self.states = states
    self.score = 0
    self.hit_x, self.hit_y = 0
-   self.jump_time = 0
+   self.jump_time = 0.9
 end
 
 function player:reset(t)
@@ -498,7 +498,6 @@ function player:reset(t)
 end
 
 function player:update(dt)
-   self.jump_time = 0.9
    local scale = dt * self.speed
    if self.dying then
       local die_time = 1.75
@@ -629,7 +628,7 @@ end
 
 function player:render(dt)
    if (self.jump_time >= self.count) and not self.dying then
-   	  draw_player(self.x, self.y, self.r, true)
+      draw_player(self.x, self.y, self.r, true)
    else
       draw_player(self.x, self.y, self.r)
    end
@@ -711,7 +710,7 @@ function draw_player(x, y, r, flame)
    local flame = flame or false
    r = r or 0
    if (flame) then
-   	  spr_r(48, x, y, r, 2, 2)
+      spr_r(48, x, y, r, 2, 2)
    else
       spr_r(32, x, y, r, 2, 2)
    end
