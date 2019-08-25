@@ -428,10 +428,9 @@ function red_pallet()
 end
 
 local player = {}
-
 make_object(player, sprite)
 
-function player:init(x, y, planets)
+function player:init(x, y, planets, states)
    self.speed = 15
    self.x = x
    self.y = y
@@ -441,6 +440,7 @@ function player:init(x, y, planets)
    self.planet_colors = {1, 2, 7, 8, 9, 12}
    self:reset(t)
    self:change_planet()
+   self.states = states
 end
 
 function player:reset(t)
@@ -450,7 +450,18 @@ end
 
 function player:update(dt)
    local jump_time = 0.9
-   if jump_time >= self.count then
+   local scale = dt * self.speed
+   if self.dying then
+      local die_time = 3
+      self.count += dt
+      self.x += self:move_x(self.t, scale)
+      self.y += self:move_y(self.t, scale)
+      self.r = self:rotate_r(self.t, dt)
+      self.r = mod(self.r, 360)
+      if self.count > die_time then
+         self:game_over()
+      end
+   elseif jump_time >= self.count then
       self.count += dt
       local x = self.translate_x * dt / jump_time
       local y = self.translate_y * dt / jump_time
@@ -460,7 +471,6 @@ function player:update(dt)
    else
       local rotation = dt * self.speed * 360
       local time = 360 / rotation
-      local scale = dt * self.speed
       self.t += dt
       self.t = mod(self.t, time)
       self.x += self:move_x(self.t, scale)
@@ -496,7 +506,12 @@ function player:set_pos(t)
 end
 
 function player:die()
+  self.dying = true
+  self.count = 0
+end
 
+function player:game_over()
+   self.states:pop()
 end
 
 function player:radius()
@@ -646,57 +661,6 @@ function star:render(dt)
    draw_rectangle(self.x, self.y, self.width, self.height, self.color)
 end
 
-local menu = {}
-make_object(menu, gameobject)
-
-function menu:init(states)
-   self.game_states = states
-   self.stars = {}
-   for i=1, 20 do
-      local color = random(1, 11)
-      if (color ~= 1 and color ~= 2 and color ~= 10) then
-        color = 7
-      end
-      self.stars[i] = star(random(1, 128), random(1, 128),
-        random(0, 1) , random(0,1), color)
-   end
-   blink_color = 0
-   blink_index = 1
-   blink_speed = 13 * 60
-   blink_frame = 0
-end
-
-function menu:create()
-end
-
-function menu:destroy()
-end
-
-function menu:update(dt)
-   if (btn(x_key) and not self.exit) then
-      self.game_states:pop()
-   end
-end
-
-function menu:render(dt)
-   bg(0)
-   blinking_text(dt)
-   -- draw white stars
-   for i=1, #self.stars do
-      self.stars[i]:render(dt)
-   end
-   print("name", 17, 105, 7)
-   print("press space to start", 32, 113, blink_color)
-
-   -- draw planet
-   draw_planet(61, 34)
-   -- draw color stars
-   draw_redstar(12, 43)
-   draw_redstar(103, 87)
-   draw_bluestar(37, 29)
-   draw_bluestar(76, 99)
-end
-
 local play = {}
 make_object(play, gameobject)
 
@@ -710,7 +674,7 @@ function play:init(states)
    for i=1, max_planets do
       self.planets:push(planet(i))
    end
-   self.player = player(50, 10, self.planets)
+   self.player = player(50, 10, self.planets, states)
 end
 
 function play:create()
@@ -761,11 +725,62 @@ function play:render_debug(dt)
    print("mem max "..max_mem, self.player.x - 80 + 0 * screen_size + 32, 0 * screen_size + 32, 6)
 end
 
+local menu = {}
+make_object(menu, gameobject)
+
+function menu:init(states)
+   self.game_states = states
+   self.stars = {}
+   for i=1, 20 do
+      local color = random(1, 11)
+      if (color ~= 1 and color ~= 2 and color ~= 10) then
+        color = 7
+      end
+      self.stars[i] = star(random(1, 128), random(1, 128),
+        random(0, 1) , random(0,1), color)
+   end
+   blink_color = 0
+   blink_index = 1
+   blink_speed = 13 * 60
+   blink_frame = 0
+end
+
+function menu:create()
+end
+
+function menu:destroy()
+end
+
+function menu:update(dt)
+   camera(0, 0)
+   if (btn(x_key) and not self.exit) then
+      self.game_states:push(play(self.game_states))
+   end
+end
+
+function menu:render(dt)
+   bg(0)
+   blinking_text(dt)
+   -- draw white stars
+   for i=1, #self.stars do
+      self.stars[i]:render(dt)
+   end
+   print("name", 17, 105, 7)
+   print("press space to start", 32, 113, blink_color)
+
+   -- draw planet
+   draw_planet(61, 34)
+   -- draw color stars
+   draw_redstar(12, 43)
+   draw_redstar(103, 87)
+   draw_bluestar(37, 29)
+   draw_bluestar(76, 99)
+end
+
 function _init()
    reset_pallet()
 
    game_states = stack()
-   game_states:push(play(game_states))
    game_states:push(menu(game_states))
    game_states:create()
 end
