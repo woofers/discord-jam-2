@@ -374,9 +374,18 @@ function planet:radius()
    if self.size == 'large' then
       return 2
    elseif self.size == 'normal' then
-      return 1.5
+      return 1.75
    end
-   return 0.75
+   return 1.15
+end
+
+function planet:offset()
+   if self.size == 'large' then
+      return 28, 10
+   elseif self.size == 'normal' then
+      return 22, 8
+   end
+   return 12, 2
 end
 
 function planet:update(dt)
@@ -491,13 +500,12 @@ end
 function player:change_planet(t, p)
    p = p or 1
    t = t or 0
-   local offset_x = 28
-   local offset_y = 10
    if p >= 0 then
       self.planet = self.planets:next()
    else
       self.planet = self.planets:prev()
    end
+   local offset_x, offset_y = self.planet:offset()
    if self.planets:remaining() <= 2 then
       self.planets:pop()
       self.planets:push(planet(self.planets:count()))
