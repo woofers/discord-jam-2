@@ -13,7 +13,7 @@ arrows = { right, left, up, down }
 z_key = 4
 x_key = 5
 
-max_planets = 6
+max_planets = 8
 
 function make_object(object)
    object.__index = object
@@ -63,26 +63,47 @@ function queue:is_empty()
    return self.first > self.last
 end
 
-function queue:next()
+function queue:next(func)
    if self:is_empty() then return end
+   func = func or function(i, old) return self.queue[i] end
+   local old = self.cursor
    self.cursor += 1
    if self.cursor > self.last then
       self.cursor = self.first
    end
-   return self.queue[self.cursor]
+   return func(self.cursor, old)
 end
 
-function queue:prev()
+function queue:prev(func)
    if self:is_empty() then return end
+   func = func or function(i) return self.queue[i] end
+   local old = self.cursor
    self.cursor -= 1
    if self.cursor < self.first then
       self.cursor = self.last
    end
-   return self.queue[self.cursor]
+   return func(self.cursor, old)
 end
 
 function queue:remaining()
    return self.last - self.cursor
+end
+
+function queue:hit_planet(x, y, d)
+   d = d or 1
+   local fudge = 8
+   local callback = function(i, old)
+      if self.queue[i].x - fudge > x then
+         return self.queue[old]
+      end
+      return nil
+   end
+
+   local value = nil
+   while value == nil do
+      value = self:next(callback)
+   end
+   return value
 end
 
 function queue:push(item)
@@ -439,9 +460,10 @@ function player:init(x, y, planets, states)
    self.ray_distance = 70
    self.planets = planets
    self.planet_colors = {1, 2, 7, 8, 9, 12}
-   self:reset(t)
+   self:reset()
    self:change_planet()
    self.states = states
+   self.hit_x, self.hit_y = 0
 end
 
 function player:reset(t)
@@ -479,13 +501,7 @@ function player:update(dt)
       self.r = self:rotate_r(self.t, dt)
       self.r = mod(self.r, 360)
       if btnp(x_key) then
-         if self:can_jump(dt) then
-            local direction = -1
-            if (0 <= self.r and self.r <= 180) then direction = 1 end
-            self:change_planet(mod(self.t + time / 2, time), direction)
-         else
-            self:die()
-         end
+         self:change_planet(mod(self.t + time / 2, time))
       end
    end
    camera(-50 + self.x, 0)
@@ -535,13 +551,19 @@ function player:move_y(t, scale)
   return cos(t * scale) * scale * self:radius()
 end
 
-function player:change_planet(t, p)
-   p = p or 1
+function player:change_planet(t)
    t = t or 0
-   if p >= 0 then
+   local hit_x, hit_y = self:hit_location()
+   if not hit_x and self.planet then
+      self:die()
+      return
+   end
+   if not self.planet then
       self.planet = self.planets:next()
    else
-      self.planet = self.planets:prev()
+      local direction = -1
+      if (0 <= self.r and self.r <= 180) then direction = 1 end
+      self.planet = self.planets:hit_planet(hit_x, hit_y, direction)
    end
    local offset_x, offset_y = self.planet:offset()
    if self.planets:remaining() <= 2 then
@@ -568,19 +590,21 @@ function player:render(dt)
          pset(x, y, 14)
       end
    end
+   pset(self.hit_x, self.hit_y, 3)
 end
 
-function player:can_jump(dt)
+function player:hit_location(dt)
    for i=self.ray_deadzone, self.ray_distance do
       local x, y = self:ray_location(i)
       local color = pget(x, y)
       for j=1, #self.planet_colors do
          if color == self.planet_colors[j] then
-            return true
+            self.hit_x, self.hit_y = x, y
+            return x, y
          end
       end
    end
-   return false
+   return false, false
 end
 
 function player:ray_location(r)
@@ -665,10 +689,6 @@ make_object(play, gameobject)
 
 function play:init(states)
    self.game_states = states
-   self.stars = {}
-   for i=1, 40 do
-      self.stars[i] = star(random(1, 128), random(1, 128))
-   end
    self.planets = queue()
    for i=1, max_planets do
       self.planets:push(planet(i))
@@ -684,18 +704,12 @@ function play:destroy()
 end
 
 function play:update(dt)
-   for i=1, #self.stars do
-      self.stars[i]:update(dt)
-   end
    self.planets:update(dt)
    self.player:update(dt)
 end
 
 function play:render(dt)
    reset_pallet()
-   for i=1, #self.stars do
-      self.stars[i]:render(dt)
-   end
    self.planets:render(dt)
    self.player:render(dt)
    self:render_debug(dt)
