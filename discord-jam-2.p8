@@ -489,7 +489,7 @@ function player:init(x, y, planets, states)
    self.states = states
    self.score = 0
    self.hit_x, self.hit_y = 0
-   self.jump_time = 0
+   self.jump_time = 0.9
 end
 
 function player:reset(t)
@@ -498,7 +498,6 @@ function player:reset(t)
 end
 
 function player:update(dt)
-   self.jump_time = 0.9
    local scale = dt * self.speed
    if self.dying then
       local die_time = 1.75
