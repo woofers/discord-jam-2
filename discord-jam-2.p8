@@ -343,6 +343,16 @@ function screen:is_visible(x, y, width, height)
    return true
 end
 
+function planet_size()
+   local i = random(0, 3)
+   if i == 0 then
+      return 'large'
+   elseif i == 1 then
+      return 'normal'
+   end
+   return 'small'
+end
+
 local planet = {}
 make_object(planet, sprite)
 
@@ -356,6 +366,8 @@ function planet:init(i)
    end
    self.x = planet_offset + next_planet * (i - 1)
    self.color = (random(0, 2) == 1)
+   self.alt = random(1, 3)
+   self.size = planet_size()
 end
 
 function planet:update(dt)
@@ -365,7 +377,7 @@ function planet:render(dt)
    if self.color then
       red_pallet()
    end
-   draw_planet(self.x, self.y)
+   draw_planet(self.x, self.y, self.size, self.alt)
    reset_pallet()
 end
 
@@ -519,8 +531,28 @@ function player:ray_location(r)
    return rotate(self.x + r, self.y, self.x + 5, self.y + 10, (-self.r + 90) / 360)
 end
 
-function draw_planet(x, y)
-   spr(12, x, y, 4, 5)
+function draw_planet(x, y, size, alt)
+   alt = alt or 1
+   size = size or 'large'
+   local case = {}
+   case['large'] = function()
+      spr(12, x, y, 4, 5)
+   end
+   case['normal'] = function()
+      if alt == 1 then
+         spr(1, x, y, 3, 4)
+      else
+         spr(4, x, y, 3, 4)
+      end
+   end
+   case['small'] = function()
+      if alt == 1 then
+         spr(7, x, y, 2, 3)
+      else
+         spr(9, x, y, 2, 3)
+      end
+   end
+   case[size](a)
 end
 
 function draw_redstar(x, y)
