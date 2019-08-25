@@ -487,7 +487,7 @@ function player:update(dt)
    local jump_time = 0.9
    local scale = dt * self.speed
    if self.dying then
-      local die_time = 3
+      local die_time = 1.75
       self.count += dt
       self.x += self:move_x(self.t, scale)
       self.y += self:move_y(self.t, scale)
