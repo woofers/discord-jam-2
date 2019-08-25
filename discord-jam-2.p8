@@ -746,6 +746,22 @@ function endscreen(dt)
     endzoomy = endzoom_y[endzoom_index]
 end
 
+function introscreen(dt)
+	local intro_sequence = {1, 2, 3, 4, 5, 6, 8, 0}
+	local intro_wsequence = {"dangerous", "orbit", "genisis:" , "endgame", 
+		"beyond", "our", "intergalactic", "space"}
+	intro_frame += 1
+	if intro_frame > intro_speed * dt then
+		intro_index += 1
+		intro_frame = 0
+	end
+	introcolor = intro_sequence[intro_index]
+	introword = intro_wsequence[intro_index]
+	if intro_index > #intro_sequence then
+		intropop = true
+	end
+
+end
 
 local star = {}
 make_object(star, sprite)
@@ -936,7 +952,7 @@ function menu:render(dt)
    elseif name == 7 then
       name = 0
    end
-   print("perihelion", 17, 105, name)
+   print("doge: bois", 30, 100, name)
    print("press space to start", 32, 113, blink_color)
 
    -- draw planet
@@ -948,12 +964,46 @@ function menu:render(dt)
    draw_bluestar(76, 99)
 end
 
+local intro = {}
+make_object(intro, gameobject)
+
+function intro:init(states)
+    self.game_states = states
+end
+
+function intro:create()
+   intro_index = 1
+   intro_speed = 30 * 60
+   intro_frame = 0
+   intropop = false
+end
+
+function intro:destroy()
+end
+
+function intro:update(dt)
+    camera(0,0)
+    if (intropop) then
+    	self.game_states:pop()
+    end
+end
+
+function intro:render(dt)
+    
+    introscreen(dt)
+    bg(introcolor)
+    print(introword, 30, 100, 7)
+
+
+end
+
 function _init()
    enable_keyboard()
    reset_pallet()
 
    game_states = stack()
    game_states:push(menu(game_states))
+   game_states:push(intro(game_states))
    game_states:create()
 end
 
