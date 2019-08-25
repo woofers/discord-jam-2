@@ -435,7 +435,8 @@ function player:init(x, y, planets, states)
    self.x = x
    self.y = y
    self.r = 0
-   self.ray_distance = 44
+   self.ray_deadzone = 10
+   self.ray_distance = 70
    self.planets = planets
    self.planet_colors = {1, 2, 7, 8, 9, 12}
    self:reset(t)
@@ -562,21 +563,19 @@ function player:render(dt)
    draw_player(self.x, self.y, self.r)
    draw_ray = true
    if draw_ray then
-      local x, y = self:ray_location(self.ray_distance)
-      pset(x, y, 14)
-      pset(x + 1, y, 14)
-      pset(x, y + 1, 14)
-      pset(x + 2, y, 14)
-      pset(x, y + 2, 14)
+      for i=self.ray_deadzone, self.ray_distance do
+         local x, y = self:ray_location(i)
+         pset(x, y, 14)
+      end
    end
 end
 
 function player:can_jump(dt)
-   local x, y = self:ray_location(self.ray_distance)
-   local colors = { pget(x, y), pget(x + 1, y), pget(x, y + 1), pget(x + 2, y), pget(x, y + 2) }
-   for i=1, #colors do
+   for i=self.ray_deadzone, self.ray_distance do
+      local x, y = self:ray_location(i)
+      local color = pget(x, y)
       for j=1, #self.planet_colors do
-         if colors[i] == self.planet_colors[j] then
+         if color == self.planet_colors[j] then
             return true
          end
       end
