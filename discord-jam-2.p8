@@ -489,6 +489,7 @@ function player:init(x, y, planets, states)
    self.states = states
    self.score = 0
    self.hit_x, self.hit_y = 0
+   self.jump_time = 0
 end
 
 function player:reset(t)
@@ -497,7 +498,7 @@ function player:reset(t)
 end
 
 function player:update(dt)
-   local jump_time = 0.9
+   self.jump_time = 0.9
    local scale = dt * self.speed
    if self.dying then
       local die_time = 1.75
@@ -509,13 +510,13 @@ function player:update(dt)
       if self.count > die_time then
          self:game_over()
       end
-   elseif jump_time >= self.count then
+   elseif self.jump_time >= self.count then
       self.count += dt
-      local x = self.translate_x * dt / jump_time
-      local y = self.translate_y * dt / jump_time
+      local x = self.translate_x * dt / self.jump_time
+      local y = self.translate_y * dt / self.jump_time
       self.x += x
       self.y += y
-      self.r += self.new_r * dt / jump_time
+      self.r += self.new_r * dt / self.jump_time
       self.was_hovering = true
    else
       local rotation = dt * self.speed * 360
@@ -624,7 +625,11 @@ function player:change_planet(t)
 end
 
 function player:render(dt)
-   draw_player(self.x, self.y, self.r)
+   if (self.jump_time >= self.count) and not self.dying then
+   	  draw_player(self.x, self.y, self.r, true)
+   else
+      draw_player(self.x, self.y, self.r)
+   end
    if btn(z_key) then
       for i=self.ray_deadzone, self.ray_distance do
          for j=0, self.ray_thickness do
@@ -699,9 +704,14 @@ function draw_bluestar(x, y)
     spr(27, x, y)
 end
 
-function draw_player(x, y, r)
+function draw_player(x, y, r, flame)
+   local flame = flame or false
    r = r or 0
-   spr_r(32, x, y, r, 2, 2)
+   if (flame) then
+   	  spr_r(48, x, y, r, 2, 2)
+   else
+      spr_r(32, x, y, r, 2, 2)
+   end
 end
 
 function blinking_text(dt)
