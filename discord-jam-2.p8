@@ -392,7 +392,6 @@ local player = {}
 make_object(player, sprite)
 
 function player:init(x, y, planets)
-   self.radius = 2
    self.speed = 15
    self.x = x
    self.y = y
@@ -460,6 +459,10 @@ function player:die()
 
 end
 
+function player:radius()
+   return 2
+end
+
 function player:rotate_r(t, dt)
    return self:rotation_speed(dt) * t + 90
 end
@@ -469,11 +472,11 @@ function player:rotation_speed(dt)
 end
 
 function player:move_x(t, scale)
-  return sin(t * scale) * scale * self.radius
+  return sin(t * scale) * scale * self:radius()
 end
 
 function player:move_y(t, scale)
-  return cos(t * scale) * scale * self.radius
+  return cos(t * scale) * scale * self:radius()
 end
 
 function player:change_planet(t, p)
