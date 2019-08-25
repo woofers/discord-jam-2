@@ -866,6 +866,8 @@ function gameover:create()
    endzoom_index = 1
    endzoom_speed = 100 * 60
    endzoom_frame = 0
+   sfx(2,-1)
+   self.over = false
 end
 
 function gameover:destroy()
@@ -873,9 +875,12 @@ end
 
 function gameover:update(dt)
     camera(0,0)
-    sfx(2,-1)
     if (kbtn(space_key)) then
         self.game_states:push(play(self.game_states))
+    end
+    if endzoom_index > 3 and not self.over  then
+        self.over = true
+        sfx(3,0)
     end
 end
 
@@ -886,7 +891,6 @@ function gameover:render(dt)
     if endzoom_index > 3 then
         blinking_text(dt)
         print("press space to try again", 18, 95, blink_color)
-        sfx(3,0)
     end
 end
 
@@ -1512,4 +1516,3 @@ __music__
 00 08094344
 00 3d3e4344
 00 3f424344
-
