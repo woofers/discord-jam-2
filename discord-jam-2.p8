@@ -502,7 +502,7 @@ function player:update(dt)
       self.r = self:rotate_r(self.t, dt)
       self.r = mod(self.r, 360)
       if btnp(x_key) then
-         self:change_planet(mod(self.t + time / 2, time))
+         self:change_planet(mod(self.t + time / (3/2), time))
       end
    end
    camera(-50 + self.x, 0)
