@@ -638,6 +638,24 @@ function blinking_text(dt)
     blink_color = blink_sequence[blink_index]
 end
 
+function endscreen(dt)
+	local endzoom_sequence = {128, 64, 32, 12, 4, 1}
+	local endzoom_x = {0, 31, 48, 59, 62, 64}
+	local endzoom_y = {0, 31, 48, 59, 62, 64}
+	endzoom_frame += 1
+	if endzoom_frame > endzoom_speed * dt then
+		endzoom_index += 1
+		endzoom_frame = 0
+	end
+	if endzoom_index > #endzoom_sequence then
+		endzoom_index = 6
+	end
+	endzoom = endzoom_sequence[endzoom_index]
+	endzoomx = endzoom_x[endzoom_index]
+	endzoomy = endzoom_y[endzoom_index]
+end
+
+
 local star = {}
 make_object(star, sprite)
 
@@ -725,6 +743,44 @@ function play:render_debug(dt)
    print("mem max "..max_mem, self.player.x - 80 + 0 * screen_size + 32, 0 * screen_size + 32, 6)
 end
 
+local gameover = {}
+make_object(gameover, gameobject)
+
+function gameover:init(states)
+	self.game_states = states
+	blink_color = 0
+    blink_index = 1
+    blink_speed = 13 * 60
+    blink_frame = 0
+    endzoom_index = 1
+    endzoom_speed = 100 * 60
+    endzoom_frame = 0
+end
+
+function gameover:create()
+end
+
+function gameover:destroy()
+end
+
+function gameover:update(dt)
+	camera(0,0)
+	if (btn(x_key)) then
+		self.game_states:push(play(self.game_states))
+	end
+end
+
+function gameover:render(dt)
+	bg(0)
+	endscreen(dt)
+	sspr(0, 32, 12, 9, endzoomx, endzoomy, endzoom, endzoom)
+	if endzoom_index > 3 then
+		blinking_text(dt)
+		print("press space to try again", 18, 95, blink_color)
+	end
+end
+
+
 local menu = {}
 make_object(menu, gameobject)
 
@@ -754,6 +810,7 @@ end
 function menu:update(dt)
    camera(0, 0)
    if (btn(x_key) and not self.exit) then
+   	  self.game_states:push(gameover(self.game_states))
       self.game_states:push(play(self.game_states))
    end
 end
