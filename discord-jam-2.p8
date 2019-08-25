@@ -94,6 +94,7 @@ function queue:hit_planet(x, y, d)
    local fudge = 8
    local callback = function(i, old)
       if self.queue[i].x - fudge > x then
+         self.cursor -= 1
          return self.queue[old]
       end
       return nil
@@ -386,6 +387,15 @@ function planet:init(i)
    self.size = planet_size()
 end
 
+function planet:score()
+   if self.size == 'large' then
+      return 20
+   elseif self.size == 'normal' then
+      return 40
+   end
+   return 80
+end
+
 function planet:radius()
    if self.size == 'large' then
       return 2
@@ -464,6 +474,7 @@ function player:init(x, y, planets, states)
    self:reset()
    self:change_planet()
    self.states = states
+   self.score = 0
    self.hit_x, self.hit_y = 0
 end
 
@@ -566,7 +577,12 @@ function player:change_planet(t)
       if (0 <= self.r and self.r <= 180) then
          direction = 1
       end
+      local left = self.planets:remaining()
       self.planet = self.planets:hit_planet(hit_x, hit_y, direction)
+      self.score += self.planet:score()
+      local skipped = left - self.planets:remaining() - 1
+      self.score += 10 * skipped
+
    end
    local offset_x, offset_y = self.planet:offset()
    local spawn_new = function()
@@ -742,7 +758,8 @@ function play:render(dt)
    reset_pallet()
    self.planets:render(dt)
    self.player:render(dt)
-   self:render_debug(dt)
+   print("score", self.player.x + 59, 0, 15)
+   print(self.player.score, self.player.x + 59, 8, 15)
 end
 
 function play:render_debug(dt)
