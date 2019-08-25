@@ -632,7 +632,7 @@ function player:render(dt)
    else
       draw_player(self.x, self.y, self.r)
    end
-   if btn(z_key) then
+   if btn(z_key) and false then
       for i=self.ray_deadzone, self.ray_distance do
          for j=0, self.ray_thickness do
            local x, y = self:ray_location(i, j)
@@ -1450,4 +1450,3 @@ __music__
 00 08094344
 00 3d3e4344
 00 3f424344
-
