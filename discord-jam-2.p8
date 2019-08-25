@@ -746,20 +746,30 @@ function endscreen(dt)
     endzoomy = endzoom_y[endzoom_index]
 end
 
+function pal_swap(color, comp)
+  pal(0, comp or 6)
+  pal(1, color)
+  pal(7, color)
+  pal(12, color)
+end
+
 function introscreen(dt)
-	local intro_sequence = {1, 2, 3, 4, 5, 6, 8, 0}
-	local intro_wsequence = {"dangerous", "orbit", "genisis:" , "endgame", 
-		"beyond", "our", "intergalactic", "space"}
-	intro_frame += 1
-	if intro_frame > intro_speed * dt then
-		intro_index += 1
-		intro_frame = 0
-	end
-	introcolor = intro_sequence[intro_index]
-	introword = intro_wsequence[intro_index]
-	if intro_index > #intro_sequence then
-		intropop = true
-	end
+    local intro_sequence = {1, 2, 3, 4, 5, 6, 8, 0}
+    local intro_sec = {12, 8, 6, 9, 0, 5, 2, 7}
+    local intro_wsequence = {"dangerous", "orbit", "genisis:" , "endgame",
+        "beyond", "our", "intergalactic", "space"}
+
+    intro_frame += 1
+    if intro_frame > intro_speed * dt then
+        intro_index += 1
+        intro_frame = 0
+    end
+    introcolor = intro_sequence[intro_index]
+    introcolorsec = intro_sec[intro_index]
+    introword = intro_wsequence[intro_index]
+    if intro_index > #intro_sequence then
+        intropop = true
+    end
 
 end
 
@@ -936,6 +946,10 @@ function menu:update(dt)
    end
 end
 
+function draw_menu_planet()
+   draw_planet(61, 34)
+end
+
 function menu:render(dt)
    bg(0)
    blinking_text(dt)
@@ -943,21 +957,11 @@ function menu:render(dt)
    for i=1, #self.stars do
       self.stars[i]:render(dt)
    end
-   local name = blink_color
-   if name == 0 then
-      name = 8
-   elseif name == 5 then
-      name = 14
-   elseif name == 6 then
-      name = 2
-   elseif name == 7 then
-      name = 0
-   end
-   print("doge: bois", 30, 100, name)
+   print("doge: bois", 30, 100, 7)
    print("press space to start", 32, 113, blink_color)
 
    -- draw planet
-   draw_planet(61, 34)
+   draw_menu_planet()
    -- draw color stars
    draw_redstar(12, 43)
    draw_redstar(103, 87)
@@ -985,15 +989,22 @@ end
 function intro:update(dt)
     camera(0,0)
     if (intropop) then
-    	self.game_states:pop()
+        self.game_states:pop()
     end
 end
 
 function intro:render(dt)
-    
+
     introscreen(dt)
+    local color = 7
+    if introcolor == 6 then
+       color = 5
+    end
     bg(introcolor)
-    print(introword, 30, 100, 7)
+    pal_swap(introcolor, introcolorsec)
+    draw_menu_planet()
+    reset_pallet()
+    print(introword, 30, 100, color)
 
 
 end
@@ -1105,17 +1116,17 @@ function spr_r(s,x,y,a,w,h)
 end
 
 __gfx__
-ee333eee000000000000ccc0000000000000000000c77cc000000000000000cc000000000000007c7000000000200000000000000000000cccccc00000000000
-ee333eee0000000000cccccc0000000000000000c717c110000000000000ccccc1000000000077cccc0000000080000000000000000ccccccc00001100000000
-ee333eee00000000cc1cc00000000000000000cc111111ccc0000000000cc17ccc000000001171cccc11000028782000000000000cccc117c000000010000000
-ee333eee000000c771100c000000000000000c11111c1cccc0c0000000c111cc1c10000000c77ccccc1100000080000000000000cccc11111100010000000000
-ee333eee0000077710011117777000000000cccc11cccc11100000000cc117c1111000000c1cc1ccc100000000200000000000cc1c1111111110001010000000
-ee333eee0000c7111111777777110000000cccccccccc111100000000ccc7c771110000007cc1cccc10000000000000000000c111111ccccc111111001000000
-ee333eee000c77111c777cccccc11000000cccccccc01c1111100000c1c1cc711cc100007c1ccc10ccc00000000000000000cc1cc1cccc7cc111110001001000
-ee333eee000cc11ccc1cccccccc1110000cccccc1100000111100000c7ccc77ccc1110007ccccc0cccc00000000000000000c1111ccccccccccc000000000100
-eefffeee00cc11ccc111ccccccc1110000ccccc11111000001110000c71ccccccc1110007ccccccccc00000000100000000cc111177cc7cc0000000000000000
-eefffeee00cc1ccc11111ccccc1111000cccc111ccc1111000110000cccccccc1c110000c1c17cc00c00100000c0000000cc1111c7ccccc00000000000000000
-eefffeee0cccccccc1cc10cccc1101000ccc7111ccccc11100110000cc7ccc111111000011c1ccc01cc000001c7c100000c7c117771cc1000000011000000000
+ee333eee000000000000ccc0000000000000000000c77cc000000000000000cc000000000000007c7000000000200000eeeeeeeeeee0000cccccc000eeeeeeee
+ee333eee0000000000cccccc0000000000000000c717c110000000000000ccccc1000000000077cccc00000000800000eeeeeeeee00ccccccc0000110eeeeeee
+ee333eee00000000cc1cc00000000000000000cc111111ccc0000000000cc17ccc000000001171cccc11000028782000eeeeeeee0cccc117c0000000100eeeee
+ee333eee000000c771100c000000000000000c11111c1cccc0c0000000c111cc1c10000000c77ccccc11000000800000eeeeee00cccc1111110001000000eeee
+ee333eee0000077710011117777000000000cccc11cccc11100000000cc117c1111000000c1cc1ccc100000000200000eeeee0cc1c1111111110001010000eee
+ee333eee0000c7111111777777110000000cccccccccc111100000000ccc7c771110000007cc1cccc100000000000000eeee0c111111ccccc1111110010000ee
+ee333eee000c77111c777cccccc11000000cccccccc01c1111100000c1c1cc711cc100007c1ccc10ccc0000000000000eee0cc1cc1cccc7cc11111000100100e
+ee333eee000cc11ccc1cccccccc1110000cccccc1100000111100000c7ccc77ccc1110007ccccc0cccc0000000000000eee0c1111ccccccccccc00000000010e
+eefffeee00cc11ccc111ccccccc1110000ccccc11111000001110000c71ccccccc1110007ccccccccc00000000100000ee0cc111177cc7cc0000000000000000
+eefffeee00cc1ccc11111ccccc1111000cccc111ccc1111000110000cccccccc1c110000c1c17cc00c00100000c00000e0cc1111c7ccccc00000000000000000
+eefffeee0cccccccc1cc10cccc1101000ccc7111ccccc11100110000cc7ccc111111000011c1ccc01cc000001c7c1000e0c7c117771cc1000000011000000000
 eefffeee0c7111ccccc710ccccc100000ccc711ccccccc0100011000ccc71cccc1110100c1711cccc100000000c000000ccc7cc7c11111100111c11000000000
 eefffeee0711c11cccc7100ccc0000000cc7711ccccccc010001100007cc11cc111001000c7101ccc0000000001000000c7cc7c7111c111111c7cc0000000000
 eefffeee0711711cccc7110cc0000000ccc7111cccc1cc0110111000071cc1cc110000000cc71011c01000000000000007cc7777ccccc1cc77cccc1000000000
@@ -1129,22 +1140,22 @@ ee333eee0c777cc77c1cc0001000000000c1c11ccccc111100000000000000000000000000000000
 ee333eee00c71cc77111c1001000000000ccc1111cc111000100000000000000000000000000000000000000000000000ccccc11cccc77ccccc7777c11000000
 ee333eee00c111771111000000000000000ccc11111110000100000000000000000000000000000000000000000000000c7c7111cccccccccc7777c111100000
 ee333eee000c11111100000000000000000c7cccc00000001100000000000000000000000000000000000000000000000cc7c11111ccccc7777c111111000000
-eefffeee000cc11cc7100000000000000000ccccccc1111110000000bbbbbbbbeeeeeeeebbbbbbbbeeeeeeee7000000000c7cc1111000cccc111111110000000
-eefffeee0000cccc771110011100000000000ccccc11111111000000bbbbbbbbeeeeeeeebbbbbbbbeeeeeeee0000000000ccc7cc1110000001111c1111000000
-eefffeee00000c111001000010000000000000cccc11111110000000bbbbbbbbeeeeeeeebbbbbbbbeeeeeeee00000000000cc7cccc11000000001cc000000000
-eefffeee000000cc111000000000000000000000ccccc11100000000bbbbbbbbeeeeeeeebbbbbbbbeeeeeeee000000000000c7c7cc1111110001111000000010
-eefffeee00000000c7177c0000000000000000000000111000000000bbbbbbbbeeeeeeeebbbbbbbbeeeeeeee000000000000cc7cc111111c1111111000100100
-eefffeee0000000000c77c0000000000000000000000c00000000000bbbbbbbbeeeeeeeebbbbbbbbeeeeeeee0000000000000cc7cc11111111cccc0001100000
-eefffeee000000000000000000000000000000000000000000000000bbbbbbbbeeeeeeeebbbbbbbbeeeeeeee00000000000000ccc7cc1c1111ccc10011000000
-eefffeee000000000000000000000000000000000000000000000000bbbbbbbbeeeeeeeebbbbbbbbeeeeeeee0000000000000000cccc11c1111c111100000000
-bbbbbbbbeeeeeeeebbbbbbbbeeeeeeeebbbbbbbbeeeeeeeebbbbbbbbeeeeeeeebbbbbbbbeeeeeeeebbbbbbbb10000000000000000cccc1111111100000000000
-bbbbbbb7eeeeeeeebbbbbbbbeeeeeeeebbbbbbbbeeeeeeeebbb88bbbeeeeeeeebbbbbbbbeeeeeeeebbbbbbbb0000000000000000000c7c7ccc10000000000000
-bbbbbbb7eeeeeeeebbbbbbbbeeeeeeeebbbbbbbbeeeeeee7bb88888beeeeeeeebbbbbbbbeeeeeeeebbbbbbbb00000070000000000000000ccccc100000000000
-bbbbbb7177eeeeeebbbbbbbbeeeeeeeebbbbbbbbeeeeeee7b889888beeeeeeeebbbbbbbbeeeeeeeebbbbbbbb0000007000000000000000000000000000000000
-bbbbb777777777ee00bbbbbbeeeeeeeebbbbbbbbeeeeee7788999988eeeeeeeebbbbbbbbeeeeeeeebbbbbbbb0000000000000000000000000000000000000000
-bbbbb775767776777505bbbbeeeeeeeebbbbbbbbeeee7777899a9998eeeeeeeebbbbbbbbeeeeeeeebbbbbbbb0000000000000000000000000000000000000000
-bbbbb775767776777500bbbbeeeeeeeebbbbbbbbeee7777e89aaa998eeeeeeeebbbbbbbbeeeeeeeebbbbbbbb0000000000000000000000000000000000000000
-bbbbb667777777ee00bbbbbbeeeeeeeebbbbbbbbeee777ee89aaaa98eeeeeeeebbbbbbbbeeeeeeeebbbbbbbb0000000000000000000000000000000000000000
+eefffeee000cc11cc7100000000000000000ccccccc1111110000000bbbbbbbbeeeeeeeebbbbbbbbeeeeeeee70000000e0c7cc1111000cccc111111110000000
+eefffeee0000cccc771110011100000000000ccccc11111111000000bbbbbbbbeeeeeeeebbbbbbbbeeeeeeee00000000e0ccc7cc1110000001111c1111000000
+eefffeee00000c111001000010000000000000cccc11111110000000bbbbbbbbeeeeeeeebbbbbbbbeeeeeeee00000000ee0cc7cccc11000000001cc000000000
+eefffeee000000cc111000000000000000000000ccccc11100000000bbbbbbbbeeeeeeeebbbbbbbbeeeeeeee00000000eee0c7c7cc1111110001111000000010
+eefffeee00000000c7177c0000000000000000000000111000000000bbbbbbbbeeeeeeeebbbbbbbbeeeeeeee00000000eee0cc7cc111111c1111111000100100
+eefffeee0000000000c77c0000000000000000000000c00000000000bbbbbbbbeeeeeeeebbbbbbbbeeeeeeee00000000eeee0cc7cc11111111cccc000110000e
+eefffeee000000000000000000000000000000000000000000000000bbbbbbbbeeeeeeeebbbbbbbbeeeeeeee00000000eeeee0ccc7cc1c1111ccc10011000eee
+eefffeee000000000000000000000000000000000000000000000000bbbbbbbbeeeeeeeebbbbbbbbeeeeeeee00000000eeeeee00cccc11c1111c1111000eeeee
+bbbbbbbbeeeeeeeebbbbbbbbeeeeeeeebbbbbbbbeeeeeeeebbbbbbbbeeeeeeeebbbbbbbbeeeeeeeebbbbbbbb10000000eeeeeeeeecccc11111111000eeeeeeee
+bbbbbbb7eeeeeeeebbbbbbbbeeeeeeeebbbbbbbbeeeeeeeebbb88bbbeeeeeeeebbbbbbbbeeeeeeeebbbbbbbb00000000eeeeeeeeeeec7c7ccc10000eeeeeeeee
+bbbbbbb7eeeeeeeebbbbbbbbeeeeeeeebbbbbbbbeeeeeee7bb88888beeeeeeeebbbbbbbbeeeeeeeebbbbbbbbee000070eeeeeeeeeeeeeeeccccc1eeeeeeeeeee
+bbbbbb7177eeeeeebbbbbbbbeeeeeeeebbbbbbbbeeeeeee7b889888beeeeeeeebbbbbbbbeeeeeeeebbbbbbbbeeee0070eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
+bbbbb777777777ee00bbbbbbeeeeeeeebbbbbbbbeeeeee7788999988eeeeeeeebbbbbbbbeeeeeeeebbbbbbbbeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
+bbbbb775767776777505bbbbeeeeeeeebbbbbbbbeeee7777899a9998eeeeeeeebbbbbbbbeeeeeeeebbbbbbbbeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
+bbbbb775767776777500bbbbeeeeeeeebbbbbbbbeee7777e89aaa998eeeeeeeebbbbbbbbeeeeeeeebbbbbbbbeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
+bbbbb667777777ee00bbbbbbeeeeeeeebbbbbbbbeee777ee89aaaa98eeeeeeeebbbbbbbbeeeeeeeebbbbbbbbeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
 eeeeee8177bbbbbbeeeeeeeebbbbbbbbeeeeeeeebbbbbbbbeeeeeeeebbbbbbbbeeeeeeeebbbbbbbbeeeeeeeebbbbbbbbeeeeeeeebbbbbbbbeeeeeeeebbbbbbbb
 eeeeeee87bbbbbbbeeeeeeeebbbbbbbbeeeeeeeebbbbbbbdee88eeeebbbbbbbbeeeeeeeebbbbbbbbeeeeeeeebbbbbbbbeeeeeeeebbbbbbbbeeeeeeeebbbbbbbb
 eeeeeeeebbbbbbbbeeeeeeeebbbbbbbbeeeeeeeebbbbbb7de8888eeebbbbbbbbeeeeeeeebbbbbbbbeeeeeeeebbbbbbbbeeeeeeeebbbbbbbbeeeeeeeebbbbbbbb
