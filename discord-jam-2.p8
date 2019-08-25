@@ -500,7 +500,7 @@ end
 function player:update(dt)
    local scale = dt * self.speed
    if self.dying then
-      local die_time = 1.75
+      local die_time = 1.65
       self.count += dt
       self.x += self:move_x(self.t, scale)
       self.y += self:move_y(self.t, scale)
