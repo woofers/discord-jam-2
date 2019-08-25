@@ -864,20 +864,27 @@ function enable_keyboard()
    poke(24365,1)
 end
 
-local menu = {}
-make_object(menu, gameobject)
-
-function menu:init(states)
-   self.game_states = states
-   self.stars = {}
+function new_stars()
+   local stars = {}
    for i=1, 20 do
       local color = random(1, 11)
       if (color ~= 1 and color ~= 2 and color ~= 10) then
         color = 7
       end
-      self.stars[i] = star(random(1, 128), random(1, 128),
-        random(0, 1) , random(0,1), color)
+      stars[i] = star(
+         random(1, 128), random(1, 128),
+         random(0, 1), random(0,1), color
+      )
    end
+   return stars
+end
+
+local menu = {}
+make_object(menu, gameobject)
+
+function menu:init(states)
+   self.game_states = states
+   self.stars = new_stars()
    blink_color = 0
    blink_index = 1
    blink_speed = 13 * 60
