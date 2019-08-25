@@ -466,7 +466,7 @@ function player:init(x, y, planets, states)
    self.x = x
    self.y = y
    self.r = 0
-   self.ray_deadzone = 15
+   self.ray_deadzone = 18
    self.ray_distance = 140
    self.ray_thickness = 12
    self.planets = planets
