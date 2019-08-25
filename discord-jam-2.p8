@@ -488,6 +488,7 @@ function player:init(x, y, planets, states)
    self:change_planet()
    self.states = states
    self.score = 0
+   self.tmp_score = 0
    self.hit_x, self.hit_y = 0
    self.jump_time = 0.9
 end
@@ -518,6 +519,10 @@ function player:update(dt)
       self.r += self.new_r * dt / self.jump_time
       self.was_hovering = true
    else
+      if self.tmp_score then
+         self.score += self.tmp_score
+         self.tmp_score = 0
+      end
       local rotation = dt * self.speed * 360
       local time = 360 / rotation
       self.t += dt
@@ -597,9 +602,9 @@ function player:change_planet(t)
       end
       local left = self.planets:remaining()
       self.planet = self.planets:hit_planet(hit_x, hit_y, direction)
-      self.score += self.planet:score()
+      self.tmp_score += self.planet:score()
       local skipped = left - self.planets:remaining() - 1
-      self.score += 10 * skipped
+      self.tmp_score += 10 * skipped
 
    end
    local offset_x, offset_y = self.planet:offset()
