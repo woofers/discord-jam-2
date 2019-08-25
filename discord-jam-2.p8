@@ -12,6 +12,7 @@ down = 3
 arrows = { right, left, up, down }
 z_key = 4
 x_key = 5
+space_key = ' '
 
 max_planets = 8
 
@@ -503,6 +504,7 @@ function player:update(dt)
       self.x += x
       self.y += y
       self.r += self.new_r * dt / jump_time
+      self.was_hovering = true
    else
       local rotation = dt * self.speed * 360
       local time = 360 / rotation
@@ -512,9 +514,10 @@ function player:update(dt)
       self.y += self:move_y(self.t, scale)
       self.r = self:rotate_r(self.t, dt)
       self.r = mod(self.r, 360)
-      if btnp(x_key) then
+      if kbtn(space_key) and not self.was_hovering then
          self:change_planet(mod(self.t + time / (3/2), time))
       end
+      self.was_hovering = false
    end
    camera(-50 + self.x, 0)
 end
@@ -807,7 +810,7 @@ end
 
 function gameover:update(dt)
     camera(0,0)
-    if (btn(x_key)) then
+    if (kbtn(space_key)) then
         self.game_states:push(play(self.game_states))
     end
 end
@@ -822,6 +825,19 @@ function gameover:render(dt)
     end
 end
 
+function kbtn(key)
+   if stat(30) == true then
+      c=stat(31)
+      if c>=" " and c<="z" then
+         return c == key
+      end
+   end
+   return false
+end
+
+function enable_keyboard()
+   poke(24365,1)
+end
 
 local menu = {}
 make_object(menu, gameobject)
@@ -851,7 +867,7 @@ end
 
 function menu:update(dt)
    camera(0, 0)
-   if (btn(x_key) and not self.exit) then
+   if (kbtn(space_key) and not self.exit) then
       self.game_states:push(gameover(self.game_states))
       self.game_states:push(play(self.game_states))
    end
@@ -887,6 +903,7 @@ function menu:render(dt)
 end
 
 function _init()
+   enable_keyboard()
    reset_pallet()
 
    game_states = stack()
@@ -1387,4 +1404,3 @@ __music__
 00 08094344
 00 3d3e4344
 00 3f424344
-
