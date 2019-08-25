@@ -414,7 +414,8 @@ function planet:spawn_location(i)
       else
          y = 80
       end
-      return 10 + 37 * (i - 1), y
+      local x = 10 + 37 * (i - 1)
+      return random(x - 8, x + 8), random(y - 8, y + 8)
    elseif self.size == 'normal' then
       local y
       if not (mod(i, 2) == 0) then
@@ -422,7 +423,8 @@ function planet:spawn_location(i)
       else
          y = 80
       end
-      return 20 + 37 * (i - 1), y
+      local x = 20 + 37 * (i - 1)
+      return random(x - 4, x + 4), random(y - 4, y + 4)
    end
    local y
    if not (mod(i, 2) == 0) then
@@ -430,7 +432,8 @@ function planet:spawn_location(i)
    else
       y = 70
    end
-   return 30 + 37 * (i - 1), y
+   local x = 30 + 37 * (i - 1)
+   return random(x - 2, x + 2), random(y - 2, y + 2)
 end
 
 function planet:offset()
