@@ -397,6 +397,15 @@ function planet:score()
    return 80
 end
 
+function planet:origin()
+   if self.size == 'large' then
+      return -8, 5
+   elseif self.size == 'normal' then
+      return -8, 5
+   end
+   return -5, 6
+end
+
 function planet:radius()
    if self.size == 'large' then
       return 2
@@ -470,7 +479,7 @@ function player:init(x, y, planets, states)
    self.x = x
    self.y = y
    self.r = 0
-   self.ray_deadzone = 23
+   self.ray_deadzone = 8
    self.ray_distance = 140
    self.ray_thickness = 14
    self.planets = planets
@@ -518,7 +527,7 @@ function player:update(dt)
       self.r = self:rotate_r(self.t, dt)
       self.r = mod(self.r, 360)
       if kbtn(space_key) and not self.was_hovering then
-         self:change_planet(mod(self.t + time / (3/2), time))
+         self:change_planet(mod(self.t + time / (1.25), time))
       end
       self.was_hovering = false
    end
@@ -571,14 +580,14 @@ end
 
 function player:change_planet(t)
    t = t or 0
-   local hit_x, hit_y = self:hit_location()
-   if not hit_x and self.planet then
-      self:die()
-      return
-   end
    if not self.planet then
       self.planet = self.planets:next()
    else
+      local hit_x, hit_y = self:hit_location()
+      if not hit_x then
+         self:die()
+         return
+      end
       local direction = -1
       if (0 <= self.r and self.r <= 180) then
          direction = 1
@@ -602,6 +611,8 @@ function player:change_planet(t)
    spawn_new()
    local new_pos = { x=self.planet.x + offset_x, y=self.planet.y + offset_y }
    local offset_pos = self:set_pos(t)
+   self.origin_x = new_pos.x
+   self.origin_y = new_pos.y
    new_pos.x += offset_pos.x
    new_pos.y += offset_pos.y
    self.new_r = mod(self:rotate_r(t, step) - self.r, 360)
@@ -620,8 +631,14 @@ function player:render(dt)
            pset(x, y, 14)
          end
       end
+      for j=0, self.ray_thickness do
+        local x, y = self:ray_location(0, j)
+        pset(x, y, 13)
+      end
+     pset(self.hit_x, self.hit_y, 3)
+     local px, py = self.planet:origin()
+     pset(self.origin_x + px, self.origin_y + py, 13)
    end
-   pset(self.hit_x, self.hit_y, 3)
 end
 
 function player:hit_location(dt)
@@ -642,7 +659,11 @@ end
 
 function player:ray_location(r, t)
    t = t or 0
-   return rotate(self.x + r, self.y + t, self.x + 5, self.y + 10, (-self.r + 5) / 360)
+   local px, py = self.planet:origin()
+   return rotate(self.origin_x + t + 8, self.origin_y + r + 15,
+                 self.origin_x + px, self.origin_y + py,
+                 -(mod(self.r - 90, 360) / 360)
+   )
 end
 
 function draw_planet(x, y, size, alt)
