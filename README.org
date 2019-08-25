@@ -60,5 +60,5 @@ and attempting to move against it will result in the shuttle doing a flip.
 
 - *[[https://www.instagram.com/suzukiavery/][Avery Suzuki]]* - Art
 - *[[https://github.com/ParkerSwinton][Parker Swinton]]* - Programing
-- *[[https://github.com/woofers][Jaxson Van Doorn]]* - Programing
-- *[[https://github.com/pvellacott][Phil Vellacott]]* - Music + Sound Effects
+- *[[https://github.com/woofers][Jaxson Van Doorn]]* - Programing + Art
+- *[[https://github.com/pvellacott][Phil Vellacott]]* - Sound Effects + Story
