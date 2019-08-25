@@ -457,7 +457,7 @@ function player:init(x, y, planets, states)
    self.y = y
    self.r = 0
    self.ray_deadzone = 10
-   self.ray_distance = 70
+   self.ray_distance = 80
    self.planets = planets
    self.planet_colors = {1, 2, 7, 8, 9, 12}
    self:reset()
@@ -564,9 +564,6 @@ function player:change_planet(t)
       local direction = -1
       if (0 <= self.r and self.r <= 180) then
          direction = 1
-      else
-         self:die()
-         return
       end
       self.planet = self.planets:hit_planet(hit_x, hit_y, direction)
    end
@@ -592,7 +589,6 @@ end
 
 function player:render(dt)
    draw_player(self.x, self.y, self.r)
-   draw_ray = true
    if draw_ray then
       for i=self.ray_deadzone, self.ray_distance do
          local x, y = self:ray_location(i)
@@ -617,7 +613,7 @@ function player:hit_location(dt)
 end
 
 function player:ray_location(r)
-   return rotate(self.x + r, self.y, self.x + 5, self.y + 10, (-self.r + 90) / 360)
+   return rotate(self.x + r, self.y, self.x + 5, self.y + 10, (-self.r) / 360)
 end
 
 function draw_planet(x, y, size, alt)
@@ -671,20 +667,20 @@ function blinking_text(dt)
 end
 
 function endscreen(dt)
-	local endzoom_sequence = {128, 64, 32, 12, 4, 1}
-	local endzoom_x = {0, 31, 48, 59, 62, 64}
-	local endzoom_y = {0, 31, 48, 59, 62, 64}
-	endzoom_frame += 1
-	if endzoom_frame > endzoom_speed * dt then
-		endzoom_index += 1
-		endzoom_frame = 0
-	end
-	if endzoom_index > #endzoom_sequence then
-		endzoom_index = 6
-	end
-	endzoom = endzoom_sequence[endzoom_index]
-	endzoomx = endzoom_x[endzoom_index]
-	endzoomy = endzoom_y[endzoom_index]
+    local endzoom_sequence = {128, 64, 32, 12, 4, 1}
+    local endzoom_x = {0, 31, 48, 59, 62, 64}
+    local endzoom_y = {0, 31, 48, 59, 62, 64}
+    endzoom_frame += 1
+    if endzoom_frame > endzoom_speed * dt then
+        endzoom_index += 1
+        endzoom_frame = 0
+    end
+    if endzoom_index > #endzoom_sequence then
+        endzoom_index = 6
+    end
+    endzoom = endzoom_sequence[endzoom_index]
+    endzoomx = endzoom_x[endzoom_index]
+    endzoomy = endzoom_y[endzoom_index]
 end
 
 
@@ -769,8 +765,8 @@ local gameover = {}
 make_object(gameover, gameobject)
 
 function gameover:init(states)
-	self.game_states = states
-	blink_color = 0
+    self.game_states = states
+    blink_color = 0
     blink_index = 1
     blink_speed = 13 * 60
     blink_frame = 0
@@ -786,20 +782,20 @@ function gameover:destroy()
 end
 
 function gameover:update(dt)
-	camera(0,0)
-	if (btn(x_key)) then
-		self.game_states:push(play(self.game_states))
-	end
+    camera(0,0)
+    if (btn(x_key)) then
+        self.game_states:push(play(self.game_states))
+    end
 end
 
 function gameover:render(dt)
-	bg(0)
-	endscreen(dt)
-	sspr(0, 32, 12, 9, endzoomx, endzoomy, endzoom, endzoom)
-	if endzoom_index > 3 then
-		blinking_text(dt)
-		print("press space to try again", 18, 95, blink_color)
-	end
+    bg(0)
+    endscreen(dt)
+    sspr(0, 32, 12, 9, endzoomx, endzoomy, endzoom, endzoom)
+    if endzoom_index > 3 then
+        blinking_text(dt)
+        print("press space to try again", 18, 95, blink_color)
+    end
 end
 
 
@@ -832,7 +828,7 @@ end
 function menu:update(dt)
    camera(0, 0)
    if (btn(x_key) and not self.exit) then
-   	  self.game_states:push(gameover(self.game_states))
+      self.game_states:push(gameover(self.game_states))
       self.game_states:push(play(self.game_states))
    end
 end
