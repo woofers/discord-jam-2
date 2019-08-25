@@ -790,16 +790,16 @@ make_object(gameover, gameobject)
 
 function gameover:init(states)
     self.game_states = states
-    blink_color = 0
-    blink_index = 1
-    blink_speed = 13 * 60
-    blink_frame = 0
-    endzoom_index = 1
-    endzoom_speed = 100 * 60
-    endzoom_frame = 0
 end
 
 function gameover:create()
+   blink_color = 0
+   blink_index = 1
+   blink_speed = 13 * 60
+   blink_frame = 0
+   endzoom_index = 1
+   endzoom_speed = 100 * 60
+   endzoom_frame = 0
 end
 
 function gameover:destroy()
