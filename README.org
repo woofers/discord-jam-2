@@ -1,10 +1,14 @@
 
-#+TITLE:	Discord Jam 2
+
+
+#+TITLE:	DOGE
 #+AUTHOR:	Avery Suzuki, Parker Swinton, Jaxson Van Doorn, Phil Vellacott
 #+EMAIL:	jaxson.vandoorn@gmail.com
 #+OPTIONS:  num:nil toc:nil
 
-* Discord Jam 2
+* DOGE
+
+*DOGE: BOIS* - Dangerous Orbit Genesis: Endgame; Beyond our Intergalactic Space
 
 Small game created in under 48 hours for [[https://itch.io/jam/discord-jam-2][Discord Jam 2]] with the theme of *Space*.
 
