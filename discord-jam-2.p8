@@ -628,7 +628,7 @@ end
 
 function player:render(dt)
    if (self.jump_time >= self.count) and not self.dying then
-   	  draw_player(self.x, self.y, self.r, true)
+      draw_player(self.x, self.y, self.r, true)
    else
       draw_player(self.x, self.y, self.r)
    end
@@ -710,7 +710,7 @@ function draw_player(x, y, r, flame)
    local flame = flame or false
    r = r or 0
    if (flame) then
-   	  spr_r(48, x, y, r, 2, 2)
+      spr_r(48, x, y, r, 2, 2)
    else
       spr_r(32, x, y, r, 2, 2)
    end
