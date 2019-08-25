@@ -25,7 +25,11 @@ His issue is that his home, the kennel planet, is on the other side of the galax
 Using nearby planets' gravitational pull, DB aims to use the power of ORBITing gravity to make it home a couple of dog years shorter.
 ** Instructions
 
-
+Hop to the orbit of the next planet using the *SPACE* key.
+The tip of the ship should be pointed at the planet you intend to move to.
+If you miscalculate the trajectory of the planet, you will orbit in-space forever and need to restart.
+You can not move to planets in the opposite direction of travel as the gravitational force is moving strongly to the right
+and attempting to move against it will result in the shuttle doing a flip.
 
 ** Controls
 
