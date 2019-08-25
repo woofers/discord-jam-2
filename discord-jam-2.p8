@@ -609,6 +609,7 @@ function player:change_planet(t)
    spawn_new()
    spawn_new()
    spawn_new()
+   self.speed += 1
    local new_pos = { x=self.planet.x + offset_x, y=self.planet.y + offset_y }
    local offset_pos = self:set_pos(t)
    self.origin_x = new_pos.x
@@ -1428,4 +1429,3 @@ __music__
 00 08094344
 00 3d3e4344
 00 3f424344
-
