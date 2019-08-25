@@ -343,6 +343,16 @@ function screen:is_visible(x, y, width, height)
    return true
 end
 
+function planet_size()
+   local i = random(0, 3)
+   if i == 0 then
+      return 'large'
+   elseif i == 1 then
+      return 'normal'
+   end
+   return 'small'
+end
+
 local planet = {}
 make_object(planet, sprite)
 
@@ -356,6 +366,26 @@ function planet:init(i)
    end
    self.x = planet_offset + next_planet * (i - 1)
    self.color = (random(0, 2) == 1)
+   self.alt = random(1, 3)
+   self.size = planet_size()
+end
+
+function planet:radius()
+   if self.size == 'large' then
+      return 2
+   elseif self.size == 'normal' then
+      return 1.75
+   end
+   return 1.15
+end
+
+function planet:offset()
+   if self.size == 'large' then
+      return 28, 10
+   elseif self.size == 'normal' then
+      return 22, 8
+   end
+   return 12, 2
 end
 
 function planet:update(dt)
@@ -365,7 +395,7 @@ function planet:render(dt)
    if self.color then
       red_pallet()
    end
-   draw_planet(self.x, self.y)
+   draw_planet(self.x, self.y, self.size, self.alt)
    reset_pallet()
 end
 
@@ -380,7 +410,6 @@ local player = {}
 make_object(player, sprite)
 
 function player:init(x, y, planets)
-   self.radius = 2
    self.speed = 15
    self.x = x
    self.y = y
@@ -448,6 +477,10 @@ function player:die()
 
 end
 
+function player:radius()
+   return self.planet:radius()
+end
+
 function player:rotate_r(t, dt)
    return self:rotation_speed(dt) * t + 90
 end
@@ -457,23 +490,22 @@ function player:rotation_speed(dt)
 end
 
 function player:move_x(t, scale)
-  return sin(t * scale) * scale * self.radius
+  return sin(t * scale) * scale * self:radius()
 end
 
 function player:move_y(t, scale)
-  return cos(t * scale) * scale * self.radius
+  return cos(t * scale) * scale * self:radius()
 end
 
 function player:change_planet(t, p)
    p = p or 1
    t = t or 0
-   local offset_x = 28
-   local offset_y = 10
    if p >= 0 then
       self.planet = self.planets:next()
    else
       self.planet = self.planets:prev()
    end
+   local offset_x, offset_y = self.planet:offset()
    if self.planets:remaining() <= 2 then
       self.planets:pop()
       self.planets:push(planet(self.planets:count()))
@@ -519,8 +551,28 @@ function player:ray_location(r)
    return rotate(self.x + r, self.y, self.x + 5, self.y + 10, (-self.r + 90) / 360)
 end
 
-function draw_planet(x, y)
-   spr(12, x, y, 4, 5)
+function draw_planet(x, y, size, alt)
+   alt = alt or 1
+   size = size or 'large'
+   local case = {}
+   case['large'] = function()
+      spr(12, x, y, 4, 5)
+   end
+   case['normal'] = function()
+      if alt == 1 then
+         spr(1, x, y, 3, 4)
+      else
+         spr(4, x, y, 3, 4)
+      end
+   end
+   case['small'] = function()
+      if alt == 1 then
+         spr(7, x, y, 2, 3)
+      else
+         spr(9, x, y, 2, 3)
+      end
+   end
+   case[size](a)
 end
 
 function draw_redstar(x, y)
