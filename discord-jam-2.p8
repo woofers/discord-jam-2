@@ -761,7 +761,7 @@ end
 function introscreen(dt)
     local intro_sequence = {1, 2, 3, 4, 5, 6, 8, 0}
     local intro_sec = {12, 8, 6, 9, 0, 5, 2, 7}
-    local intro_wsequence = {"dangerous", "orbit", "genisis:" , "endgame",
+    local intro_wsequence = {"dangerous", "orbit", "genesis:" , "endgame",
         "beyond", "our", "intergalactic", "space"}
 
     intro_frame += 1
