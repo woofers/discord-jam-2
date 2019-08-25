@@ -562,7 +562,12 @@ function player:change_planet(t)
       self.planet = self.planets:next()
    else
       local direction = -1
-      if (0 <= self.r and self.r <= 180) then direction = 1 end
+      if (0 <= self.r and self.r <= 180) then
+         direction = 1
+      else
+         self:die()
+         return
+      end
       self.planet = self.planets:hit_planet(hit_x, hit_y, direction)
    end
    local offset_x, offset_y = self.planet:offset()
