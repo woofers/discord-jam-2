@@ -566,10 +566,14 @@ function player:change_planet(t)
       self.planet = self.planets:hit_planet(hit_x, hit_y, direction)
    end
    local offset_x, offset_y = self.planet:offset()
-   if self.planets:remaining() <= 2 then
-      self.planets:pop()
-      self.planets:push(planet(self.planets:count()))
+   local spawn_new = function()
+     if self.planets:remaining() <= 2 then
+        self.planets:pop()
+        self.planets:push(planet(self.planets:count()))
+     end
    end
+   spawn_new()
+   spawn_new()
    local new_pos = { x=self.planet.x + offset_x, y=self.planet.y + offset_y }
    local offset_pos = self:set_pos(t)
    new_pos.x += offset_pos.x
@@ -1161,4 +1165,3 @@ __music__
 00 08094344
 00 3d3e4344
 00 3f424344
-
