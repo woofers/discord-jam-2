@@ -504,6 +504,7 @@ function player:update(dt)
       self.x += x
       self.y += y
       self.r += self.new_r * dt / jump_time
+      self.was_hovering = true
    else
       local rotation = dt * self.speed * 360
       local time = 360 / rotation
@@ -513,9 +514,10 @@ function player:update(dt)
       self.y += self:move_y(self.t, scale)
       self.r = self:rotate_r(self.t, dt)
       self.r = mod(self.r, 360)
-      if kbtn(space_key) then
+      if kbtn(space_key) and not self.was_hovering then
          self:change_planet(mod(self.t + time / (3/2), time))
       end
+      self.was_hovering = false
    end
    camera(-50 + self.x, 0)
 end
