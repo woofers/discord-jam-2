@@ -1083,6 +1083,12 @@ function mod(a, b)
    return a - flr(a / b) * b
 end
 
+function to_html()
+   path = 'discord-jam-2'
+   export(path .. "/index.html")
+   exit()
+end
+
 -- From https://www.lexaloffle.com/bbs/?pid=40230
 function rotate(x,y,cx,cy,angle)
    local sina=sin(angle)
@@ -1123,6 +1129,8 @@ function spr_r(s,x,y,a,w,h)
       end
    end
 end
+
+to_html()
 
 __gfx__
 ee333eee000000000000ccc0000000000000000000c77cc000000000000000cc000000000000007c7000000000200000eeeeeeeeeee0000cccccc000eeeeeeee
