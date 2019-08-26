@@ -1,0 +1,34 @@
+{
+  "name": "doge-bois",
+  "version": "1.0.0",
+  "description": "Discord Jam 2 Game Entry",
+  "main": "dist/index.js",
+  "files": [
+    "dist",
+    "License.txt",
+    "package.json",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "./build.sh",
+    "clean": "rm -rf dist"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/woofers/discord-jam-2.git"
+  },
+  "keywords": [
+    "lua",
+    "discord-jam",
+    "pico-8",
+    "ship"
+  ],
+  "author": "Jaxson Van Doorn <jaxson.vandoorn@gmail.com>",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/woofers/discord-jam-2/issues"
+  },
+  "homepage": "https://github.com/woofers/discord-jam-2#readme",
+  "dependencies": {},
+  "devDependencies": {}
+}

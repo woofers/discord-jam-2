@@ -1,22 +1,26 @@
 
 
 
-#+TITLE:	DOGE
+#+TITLE:	DOGE: BOIS
 #+AUTHOR:	Avery Suzuki, Parker Swinton, Jaxson Van Doorn, Phil Vellacott
 #+EMAIL:	jaxson.vandoorn@gmail.com
 #+OPTIONS:  num:nil toc:nil
 
-* DOGE
+* DOGE: BOIS
 
 *DOGE: BOIS* - Dangerous Orbit Genesis: Endgame; Beyond our Intergalactic Space
 
 Small game created in under 48 hours for [[https://itch.io/jam/discord-jam-2][Discord Jam 2]] with the theme of *Space*.
 
+Our game takes place in *space* and is controlled only using the *SPACE* key.
+
 Game is built using [[https://www.lua.org/][Lua]], with the [[https://www.lexaloffle.com/pico-8.php][PICO-8]] Fantasy Console.
 
-*[[https://ldjam.com/events/ludum-dare/44/alien-e-x-p-a-n-s-i-o-n][Discord Jam 2 Page]]*
+*[[https://itch.io/jam/discord-jam-2/rate/473619][Discord Jam 2 Page]]*
 
-*[[https://jaxson.vandoorn.ca/ludum-dare-44/][Play Original Version]]* entered in [[https://itch.io/jam/discord-jam-2][Discord Jam 2]]
+*[[https://jaxson.vandoorn.ca/projects/discord-jam-2/play][Play Updated Version]]*
+
+*[[https://woofers.itch.io/dogebois][Play Original Version]]* entered in [[https://itch.io/jam/discord-jam-2][Discord Jam 2]]
 
 #+CAPTION: Title Screen
 #+NAME:    Title Sreen

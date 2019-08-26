@@ -1,16 +1,20 @@
 
 
-# DOGE
+# DOGE: BOIS
 
 **DOGE: BOIS** - Dangerous Orbit Genesis: Endgame; Beyond our Intergalactic Space
 
 Small game created in under 48 hours for [Discord Jam 2](https://itch.io/jam/discord-jam-2) with the theme of **Space**.
 
+Our game takes place in **space** and is controlled only using the **SPACE** key.
+
 Game is built using [Lua](https://www.lua.org/), with the [PICO-8](https://www.lexaloffle.com/pico-8.php) Fantasy Console.
 
-**[Discord Jam 2 Page](https://ldjam.com/events/ludum-dare/44/alien-e-x-p-a-n-s-i-o-n)**
+**[Discord Jam 2 Page](https://itch.io/jam/discord-jam-2/rate/473619)**
 
-**[Play Original Version](https://jaxson.vandoorn.ca/ludum-dare-44/)** entered in [Discord Jam 2](https://itch.io/jam/discord-jam-2)
+**[Play Updated Version](https://jaxson.vandoorn.ca/projects/discord-jam-2/play)**
+
+**[Play Original Version](https://woofers.itch.io/dogebois)** entered in [Discord Jam 2](https://itch.io/jam/discord-jam-2)
 
 ![img](./screenshots/1.png "Title Screen")
 
