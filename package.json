@@ -6,9 +6,7 @@
   "files": [
     "dist",
     "License.txt",
-    "placeholder.png",
     "package.json",
-    "favicon.png",
     "README.md"
   ],
   "scripts": {
