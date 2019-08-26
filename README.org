@@ -1,12 +1,12 @@
 
 
 
-#+TITLE:	DOGE
+#+TITLE:	DOGE: BOIS
 #+AUTHOR:	Avery Suzuki, Parker Swinton, Jaxson Van Doorn, Phil Vellacott
 #+EMAIL:	jaxson.vandoorn@gmail.com
 #+OPTIONS:  num:nil toc:nil
 
-* DOGE
+* DOGE: BOIS
 
 *DOGE: BOIS* - Dangerous Orbit Genesis: Endgame; Beyond our Intergalactic Space
 
