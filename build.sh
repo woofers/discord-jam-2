@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-FILE=discord-jam-2.p8
+FILE=doge.p8
 
 # Replace export path with current folder
 BASE=$(basename $(pwd))
