@@ -12,3 +12,4 @@ pico8 -x $FILE
 # Move to dist folder
 mkdir -p dist
 mv index.js index.html dist
+cp label.png dist/.
