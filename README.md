@@ -6,6 +6,8 @@
 
 Small game created in under 48 hours for [Discord Jam 2](https://itch.io/jam/discord-jam-2) with the theme of **Space**.
 
+Our game takes place in **space** and is controlled only using the **SPACE** key.
+
 Game is built using [Lua](https://www.lua.org/), with the [PICO-8](https://www.lexaloffle.com/pico-8.php) Fantasy Console.
 
 **[Discord Jam 2 Page](https://itch.io/jam/discord-jam-2/rate/473619)**
