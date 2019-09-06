@@ -18,6 +18,10 @@ Game is built using [Lua](https://www.lua.org/), with the [PICO-8](https://www.l
 
 ![img](./screenshots/1.png "Title Screen")
 
+[![img](./screenshots/results.png "Discord Jam 2 Results")](https://itch.io/jam/discord-jam-2/rate/473619)
+
+Ranked from **12 ratings**. Score is adjusted from raw score by the median number of ratings per game in the jam.
+
 
 ## Story
 
