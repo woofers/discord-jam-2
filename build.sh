@@ -4,7 +4,7 @@ FILE=doge.p8
 
 # Replace export path with current folder
 BASE=$(basename $(pwd))
-sed -i "1087c\ \ \ path = '$BASE'" $FILE
+sed -i "1088c\ \ \ path = '$BASE'" $FILE
 
 # Export for web
 pico8 -x $FILE
