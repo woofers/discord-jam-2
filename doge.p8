@@ -602,10 +602,11 @@ function player:change_planet(t)
       end
       local left = self.planets:remaining()
       self.planet = self.planets:hit_planet(hit_x, hit_y, direction)
-      self.tmp_score += self.planet:score()
       local skipped = left - self.planets:remaining() - 1
-      self.tmp_score += 10 * skipped
-
+      if skipped >= 0 then
+        self.tmp_score += self.planet:score()
+        self.tmp_score += 10 * skipped
+      end
    end
    local offset_x, offset_y = self.planet:offset()
    local spawn_new = function()
@@ -1529,4 +1530,3 @@ __music__
 00 08094344
 00 3d3e4344
 00 3f424344
-
