@@ -1,6 +1,6 @@
 {
   "name": "doge-bois",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Discord Jam 2 Game Entry",
   "main": "dist/index.js",
   "files": [
