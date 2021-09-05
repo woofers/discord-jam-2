@@ -18,7 +18,7 @@ Game is built using [[https://www.lua.org/][Lua]], with the [[https://www.lexalo
 
 *[[https://itch.io/jam/discord-jam-2/rate/473619][Discord Jam 2 Page]]*
 
-*[[https://jaxson.vandoorn.ca/projects/discord-jam-2/play/][Play Updated Version]]*
+*[[https://jaxs.onl/projects/discord-jam-2/play/][Play Updated Version]]*
 
 *[[https://woofers.itch.io/dogebois][Play Original Version]]* entered in [[https://itch.io/jam/discord-jam-2][Discord Jam 2]]
 

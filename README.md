@@ -12,7 +12,7 @@ Game is built using [Lua](https://www.lua.org/), with the [PICO-8](https://www.l
 
 **[Discord Jam 2 Page](https://itch.io/jam/discord-jam-2/rate/473619)**
 
-**[Play Updated Version](https://jaxson.vandoorn.ca/projects/discord-jam-2/play/)**
+**[Play Updated Version](https://jaxs.onl/projects/discord-jam-2/play/)**
 
 **[Play Original Version](https://woofers.itch.io/dogebois)** entered in [Discord Jam 2](https://itch.io/jam/discord-jam-2)
 
